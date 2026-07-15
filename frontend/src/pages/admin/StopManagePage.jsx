@@ -69,7 +69,7 @@ export const StopManagePage = () => {
       };
       let response;
       if (editingStop) {
-        response = await apiFetch(`/api/stops/${editingStop._id}`, { method: 'PUT', body: JSON.stringify(body) });
+        response = await apiFetch(`/api/stops/${editingStop._id}`, { method: 'PATCH', body: JSON.stringify(body) });
       } else {
         response = await apiFetch('/api/stops', { method: 'POST', body: JSON.stringify(body) });
       }

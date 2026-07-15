@@ -43,7 +43,6 @@ export const Sidebar = ({ isOpen, toggleSidebar }) => {
       default:
         return [
           { to: '/dashboard', label: 'Live Map', icon: MapPin },
-          { to: '/stops', label: 'Bus Stops', icon: MapPin },
           { to: '/routes', label: 'Bus Routes', icon: RoadHorizon },
           { to: '/alerts', label: 'ETA Alerts', icon: Bell },
         ];
@@ -116,6 +115,7 @@ export const Sidebar = ({ isOpen, toggleSidebar }) => {
               <NavLink 
                 key={link.to} 
                 to={link.to} 
+                end
                 onClick={() => {
                   if (window.innerWidth < 768) toggleSidebar();
                 }}

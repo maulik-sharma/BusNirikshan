@@ -48,7 +48,6 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={['user']}><Layout /></ProtectedRoute>}>
             <Route path="/dashboard" element={<PassengerDashboard />} />
             <Route path="/stops/:stopId" element={<StopDetailPage />} />
-            <Route path="/stops" element={<StopDetailPage />} />
             <Route path="/routes" element={<RoutesPage />} />
             <Route path="/alerts" element={<AlertsPage />} />
           </Route>
@@ -63,6 +62,7 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={['admin']}><Layout /></ProtectedRoute>}>
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/buses" element={<BusManagePage />} />
+            <Route path="/admin/stops/:stopId" element={<StopDetailPage />} />
             <Route path="/admin/stops" element={<StopManagePage />} />
             <Route path="/admin/routes" element={<RouteManagePage />} />
             <Route path="/admin/drivers" element={<DriverManagePage />} />

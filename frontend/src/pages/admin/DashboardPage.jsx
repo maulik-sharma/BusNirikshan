@@ -13,6 +13,7 @@ import {
 export const DashboardPage = () => {
   const [activeStats, setActiveStats] = useState(null);
   const [activeBuses, setActiveBuses] = useState([]);
+  const [stops, setStops] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -36,6 +37,12 @@ export const DashboardPage = () => {
         // Subscribe to WS updates
         const activeIds = (liveData.buses || []).map(b => b._id);
         subscribe(activeIds);
+      }
+      // 3. Fetch stops for the map
+      const stopsRes = await apiFetch('/api/stops?limit=500');
+      const stopsData = await stopsRes.json();
+      if (stopsRes.ok) {
+        setStops(stopsData.stops || []);
       }
     } catch (err) {
       console.error(err);
@@ -155,7 +162,7 @@ export const DashboardPage = () => {
         <div className="lg:col-span-2 relative min-h-[350px] lg:min-h-0">
           <LiveMap 
             buses={mergedBuses} 
-            stops={[]} 
+            stops={stops} 
             zoom={5} 
           />
         </div>

@@ -11,7 +11,7 @@ export const SystemHealthPage = () => {
     setIsLoading(true);
     setError('');
     try {
-      const response = await apiFetch('/api/analytics/system/health');
+      const response = await apiFetch('/api/admin/system/health');
       const data = await response.json();
       if (response.ok) {
         setHealth(data);

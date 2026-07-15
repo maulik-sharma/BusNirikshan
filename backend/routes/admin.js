@@ -79,7 +79,7 @@ router.patch("/users/:userId/role", async (req, res) => {
     }
 
     // prevent admin from demoting themselves
-    if (req.user._id.toString() === userId && role !== "admin") {
+    if (req.user.userId === userId && role !== "admin") {
       return res.status(400).json({ message: "You cannot change your own role" });
     }
 
@@ -107,19 +107,19 @@ router.get("/system/health", async (req, res) => {
   const health = {
     status: "ok",
     timestamp: new Date().toISOString(),
-    services: {
-      mongodb: { status: "unknown", latency_ms: null },
-      redis:   { status: "unknown", latency_ms: null },
-    },
+    mongodb: { status: "unknown", latency_ms: null, host: mongoose.connection.host || 'N/A' },
+    redis:   { status: "unknown", latency_ms: null, memory: "unknown" },
+    server:  { uptime: `${Math.floor(process.uptime())}s`, pid: process.pid },
+    instances: []
   };
 
   // check MongoDB
   try {
     const mongoStart = Date.now();
     await mongoose.connection.db.command({ ping: 1 });
-    health.services.mongodb = { status: "ok", latency_ms: Date.now() - mongoStart };
+    health.mongodb = { ...health.mongodb, status: "ok", latency_ms: Date.now() - mongoStart };
   } catch (err) {
-    health.services.mongodb = { status: "error", error: err.message };
+    health.mongodb = { ...health.mongodb, status: "error", error: err.message };
     health.status = "degraded";
   }
 
@@ -130,9 +130,30 @@ router.get("/system/health", async (req, res) => {
     if (!redis) throw new Error("Redis client not available");
     const redisStart = Date.now();
     await redis.ping();
-    health.services.redis = { status: "ok", latency_ms: Date.now() - redisStart };
+    health.redis = { ...health.redis, status: "ok", latency_ms: Date.now() - redisStart };
+    
+    try {
+      const info = await redis.info("memory");
+      const match = info.match(/used_memory_human:(.*)/);
+      if (match) health.redis.memory = match[1].trim();
+    } catch (e) {}
+
+    try {
+      const keys = await redis.keys("instance:*");
+      if (keys.length > 0) {
+        health.instances = await Promise.all(
+          keys.map(async (key) => {
+            const raw = await redis.get(key);
+            try {
+              const parsed = JSON.parse(raw);
+              return { hostname: parsed.instanceId.split('-')[0], pid: parsed.port || 'N/A' };
+            } catch { return { hostname: key }; }
+          })
+        );
+      }
+    } catch(e) {}
   } catch (err) {
-    health.services.redis = { status: "error", error: err.message };
+    health.redis = { ...health.redis, status: "error", error: err.message };
     health.status = "degraded";
   }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import L from 'leaflet';
 
 const createStopIcon = (isActive) => {
@@ -39,6 +40,7 @@ const createStopIcon = (isActive) => {
 
 export const StopMarker = ({ stop }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { _id, name, city, state, location, isActive, rtc } = stop;
 
   if (!location || !location.coordinates || location.coordinates.length < 2) {
@@ -72,7 +74,7 @@ export const StopMarker = ({ stop }) => {
           </div>
 
           <button 
-            onClick={() => navigate(`/stops/${_id}`)}
+            onClick={() => navigate(user?.role === 'admin' ? `/admin/stops/${_id}` : `/stops/${_id}`)}
             className="w-full mt-2 py-1.5 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-black font-semibold rounded-lg text-[11px] transition-all text-center"
           >
             Open ETA Board

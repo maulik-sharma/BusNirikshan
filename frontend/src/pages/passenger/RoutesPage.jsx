@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client';
-import { RoadHorizon, ArrowRight, Warning, Check, Shield } from '@phosphor-icons/react';
+import { RoadHorizon, ArrowRight, Warning, Check, Shield, CaretDown, CaretUp, Circle } from '@phosphor-icons/react';
 import { Link } from 'react-router-dom';
 
 export const RoutesPage = () => {
@@ -9,6 +9,28 @@ export const RoutesPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [rtcFilter, setRtcFilter] = useState('all');
   const [rtcList, setRtcList] = useState([]);
+  const [expandedRouteId, setExpandedRouteId] = useState(null);
+  const [routeDetails, setRouteDetails] = useState({});
+
+  const toggleRoute = async (routeId) => {
+    if (expandedRouteId === routeId) {
+      setExpandedRouteId(null);
+      return;
+    }
+    setExpandedRouteId(routeId);
+
+    if (!routeDetails[routeId]) {
+      try {
+        const response = await apiFetch(`/api/routes/${routeId}`);
+        const data = await response.json();
+        if (response.ok && data.route) {
+          setRouteDetails(prev => ({ ...prev, [routeId]: data.route }));
+        }
+      } catch (err) {
+        console.error('Failed to load route details:', err);
+      }
+    }
+  };
 
   const loadRoutes = async () => {
     try {
@@ -129,12 +151,46 @@ export const RoutesPage = () => {
               </div>
 
               {/* View Detail Action */}
-              <div className="pt-6 mt-6 border-t border-white/5 flex items-center justify-end">
-                <span className="inline-flex items-center gap-1.5 text-xs text-emerald-500 font-semibold group-hover:underline">
-                  <span>Show Stops Sequence</span>
-                  <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+              <div 
+                onClick={() => toggleRoute(route._id)}
+                className="pt-4 mt-6 border-t border-white/5 flex items-center justify-between cursor-pointer group-hover:border-emerald-500/30 transition-colors"
+              >
+                <span className="text-xs text-[#8e9bb0] group-hover:text-emerald-500 transition-colors font-semibold">
+                  {expandedRouteId === route._id ? 'Hide Stops Sequence' : 'Show Stops Sequence'}
+                </span>
+                <span className="text-[#8e9bb0] group-hover:text-emerald-500 transition-all">
+                  {expandedRouteId === route._id ? <CaretUp size={14} /> : <CaretDown size={14} />}
                 </span>
               </div>
+
+              {/* Expanded Timeline */}
+              {expandedRouteId === route._id && (
+                <div className="mt-4 pt-4 border-t border-white/5 animate-fade-in">
+                  <h5 className="text-[10px] uppercase tracking-wider text-[#8e9bb0] font-semibold mb-3">Sequence</h5>
+                  {!routeDetails[route._id] ? (
+                    <div className="text-xs text-slate-400 flex items-center gap-2">
+                      <div className="w-3 h-3 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin"></div>
+                      Loading stops...
+                    </div>
+                  ) : routeDetails[route._id].stopIds?.length > 0 ? (
+                    <div className="relative border-l border-white/10 ml-2 space-y-4 pb-2">
+                      {routeDetails[route._id].stopIds.map((stop, idx) => (
+                        <div key={idx} className="relative pl-4 flex flex-col group/stop">
+                          <Circle size={8} weight="fill" className="absolute -left-[4.5px] top-1 text-[#8e9bb0] group-hover/stop:text-emerald-500 transition-colors" />
+                          <span className="text-xs font-semibold text-slate-200 group-hover/stop:text-emerald-400 transition-colors">
+                            {stop.name || 'Unknown Stop'}
+                          </span>
+                          <span className="text-[10px] text-slate-500 font-mono capitalize">
+                            {stop.city || 'Standard'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-xs text-slate-500">No stops defined.</div>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>

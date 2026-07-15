@@ -36,6 +36,10 @@ app.use(morgan("dev"));
 app.use(cookieParser());
 
 app.use("/api/auth",      authRoutes);
+
+// Register WebSocket BEFORE authorise middleware
+app.ws("/api/locations/livewebsocket", locationWsHandler);
+
 app.use("/api/user",      authorise, userApiLimiter, userRoutes);
 app.use("/api/stops",     authorise, userApiLimiter, stopRoutes);
 app.use("/api/buses",     authorise, userApiLimiter, busRoutes);
@@ -50,7 +54,6 @@ app.use("/api/admin",     authorise, adminRoutes);               // no rate limi
 app.use("/api/locations", authorise, userApiLimiter, locationSseRoutes);
 
 app.use("/api/notifications", authorise, notificationLimiter, notificationRoutes);
-app.ws("/api/locations/livewebsocket", locationWsHandler);
 
 // ── Swagger UI ────────────────────────────────────────────────────────────────
 const swaggerUi = require('swagger-ui-express');

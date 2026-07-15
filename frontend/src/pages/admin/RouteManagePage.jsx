@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client';
-import { RoadHorizon, Plus, Pencil, Trash, Warning, Check, X } from '@phosphor-icons/react';
+import { RoadHorizon, Plus, Pencil, Trash, X, Warning, Check } from '@phosphor-icons/react';
+import { StopSelector } from '../../components/StopSelector';
 
-const emptyForm = { name: '', rtc: '', totalDistanceKm: '', estimatedDurationMin: '', stopIds: '' };
+const emptyForm = { name: '', rtc: '', totalDistanceKm: '', estimatedDurationMin: '', stopIds: [] };
 
 export const RouteManagePage = () => {
   const [routes, setRoutes] = useState([]);
@@ -56,7 +57,7 @@ export const RouteManagePage = () => {
       rtc: route.rtc,
       totalDistanceKm: route.totalDistanceKm,
       estimatedDurationMin: route.estimatedDurationMin,
-      stopIds: ids.join(', '),
+      stopIds: ids,
     });
     setShowModal(true);
   };
@@ -65,17 +66,16 @@ export const RouteManagePage = () => {
     e.preventDefault();
     setError(''); setSuccess('');
     try {
-      const stopIdsArray = form.stopIds.split(',').map(s => s.trim()).filter(Boolean);
       const body = {
         name: form.name,
         rtc: form.rtc,
         totalDistanceKm: Number(form.totalDistanceKm),
         estimatedDurationMin: Number(form.estimatedDurationMin),
-        stopIds: stopIdsArray,
+        stopIds: form.stopIds,
       };
       let response;
       if (editingRoute) {
-        response = await apiFetch(`/api/routes/${editingRoute._id}`, { method: 'PUT', body: JSON.stringify(body) });
+        response = await apiFetch(`/api/routes/${editingRoute._id}`, { method: 'PATCH', body: JSON.stringify(body) });
       } else {
         response = await apiFetch('/api/routes', { method: 'POST', body: JSON.stringify(body) });
       }
@@ -205,10 +205,13 @@ export const RouteManagePage = () => {
                   <input type="number" min={0} value={form.estimatedDurationMin} onChange={(e) => updateField('estimatedDurationMin', e.target.value)} required className="w-full px-4 py-2.5 bg-[#07090e] border border-white/5 focus:border-emerald-500/40 rounded-xl text-white text-sm focus:outline-none transition-all font-mono" />
                 </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-xs font-semibold text-[#8e9bb0] uppercase tracking-wider block">Stop IDs (comma separated, in sequence)</label>
-                <textarea value={form.stopIds} onChange={(e) => updateField('stopIds', e.target.value)} required rows={3} className="w-full px-4 py-2.5 bg-[#07090e] border border-white/5 focus:border-emerald-500/40 rounded-xl text-white text-xs focus:outline-none transition-all font-mono resize-none" />
-                <p className="text-[10px] text-[#8e9bb0]">Available stops: {stops.length}. Enter MongoDB ObjectIds separated by commas.</p>
+              <div className="space-y-2 pt-2 border-t border-white/5">
+                <label className="text-xs font-semibold text-[#8e9bb0] uppercase tracking-wider block">Route Sequence</label>
+                <StopSelector 
+                  availableStops={stops}
+                  selectedStopIds={form.stopIds}
+                  onChange={(newStopIds) => updateField('stopIds', newStopIds)}
+                />
               </div>
               <button type="submit" className="w-full mt-2 py-3 bg-emerald-500 hover:bg-emerald-600 active:scale-[0.98] text-black font-semibold rounded-xl text-sm transition-all shadow-[0_4px_12px_rgba(16,185,129,0.2)]">
                 {editingRoute ? 'Save Changes' : 'Create Route'}

@@ -30,10 +30,28 @@ const RESET_TOKEN_SECRET = process.env.RESET_TOKEN_SECRET;
  */
 router.post("/register/init", otpLimiter, async (req, res) => {
     try {
-        const { name, email, password, role, rtc } = req.body;
+        const { name, email, password, role, rtc, licenseNumber } = req.body;
 
         if (!name || !email || !password || !role) {
             return res.status(400).json({ message: "Name, email, password, and role are required" });
+        }
+
+        if (role === 'driver') {
+            if (!rtc || !licenseNumber) {
+                return res.status(400).json({ message: "RTC and License Number are required for drivers" });
+            }
+            const licenseRegex = /^[A-Z]{2}\d{2}-\d{4,8}$/;
+            if (!licenseRegex.test(licenseNumber)) {
+                return res.status(400).json({
+                    message: "Invalid license number format. Expected format: GJ01-20240001"
+                });
+            }
+            // Make sure license isn't already used
+            const Driver = require('../models/driver');
+            const conflict = await Driver.findOne({ licenseNumber });
+            if (conflict) {
+                return res.status(409).json({ message: "License number is already registered" });
+            }
         }
 
         const passwordError = validatePassword(password);
@@ -58,7 +76,7 @@ router.post("/register/init", otpLimiter, async (req, res) => {
         await OtpToken.create({
             email,
             codeHash,
-            pendingData: { name, passwordHash, role, rtc: rtc || null },
+            pendingData: { name, passwordHash, role, rtc: rtc || null, licenseNumber: licenseNumber || null },
             expiresAt: new Date(Date.now() + 10 * 60 * 1000)  // 10 minutes
         });
 
@@ -135,8 +153,13 @@ router.post("/register/verify", otpLimiter, async (req, res) => {
             return res.status(400).json({ message: "User already exists" });
         }
 
-        const { name, passwordHash, role, rtc } = tokenDoc.pendingData;
-        await User.create({ name, email, passwordHash, role, rtc });
+        const { name, passwordHash, role, rtc, licenseNumber } = tokenDoc.pendingData;
+        const user = await User.create({ name, email, passwordHash, role, rtc });
+
+        if (role === 'driver' && licenseNumber) {
+            const Driver = require('../models/driver');
+            await Driver.create({ userId: user._id, rtc, licenseNumber });
+        }
 
         res.status(201).json({ message: "Registration successful. You can now log in." });
     } catch (error) {

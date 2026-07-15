@@ -56,7 +56,7 @@ export const DriverManagePage = () => {
       const body = { ...form };
       let response;
       if (editingDriver) {
-        response = await apiFetch(`/api/drivers/${editingDriver._id}`, { method: 'PUT', body: JSON.stringify(body) });
+        response = await apiFetch(`/api/drivers/${editingDriver._id}`, { method: 'PATCH', body: JSON.stringify(body) });
       } else {
         response = await apiFetch('/api/drivers', { method: 'POST', body: JSON.stringify(body) });
       }

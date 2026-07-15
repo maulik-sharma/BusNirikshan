@@ -9,6 +9,7 @@ export const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('user'); // Default to standard 'user' role
   const [rtc, setRtc] = useState('');
+  const [licenseNumber, setLicenseNumber] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -32,7 +33,8 @@ export const RegisterPage = () => {
           email, 
           password, 
           role, 
-          rtc: role === 'driver' ? rtc : undefined 
+          rtc: role === 'driver' ? rtc : undefined,
+          licenseNumber: role === 'driver' ? licenseNumber : undefined 
         }),
       });
 
@@ -168,25 +170,47 @@ export const RegisterPage = () => {
 
             {/* Conditionally Render RTC Field for Drivers */}
             {role === 'driver' && (
-              <div className="space-y-2 animate-fade-in-up">
-                <label className="text-xs font-semibold text-[#8e9bb0] uppercase tracking-wider block">
-                  RTC Corporation
-                </label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-[#8e9bb0]">
-                    <Shield size={18} />
-                  </span>
-                  <input 
-                    type="text"
-                    value={rtc}
-                    onChange={(e) => setRtc(e.target.value)}
-                    placeholder="GSRTC"
-                    required
-                    disabled={isSubmitting}
-                    className="w-full pl-11 pr-4 py-3 bg-[#07090e] border border-white/5 hover:border-white/10 focus:border-emerald-500/40 rounded-xl text-white placeholder-slate-600 focus:outline-none transition-all font-sans text-sm"
-                  />
+              <>
+                <div className="space-y-2 animate-fade-in-up">
+                  <label className="text-xs font-semibold text-[#8e9bb0] uppercase tracking-wider block">
+                    RTC Corporation
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-[#8e9bb0]">
+                      <Shield size={18} />
+                    </span>
+                    <input 
+                      type="text"
+                      value={rtc}
+                      onChange={(e) => setRtc(e.target.value)}
+                      placeholder="GSRTC"
+                      required
+                      disabled={isSubmitting}
+                      className="w-full pl-11 pr-4 py-3 bg-[#07090e] border border-white/5 hover:border-white/10 focus:border-emerald-500/40 rounded-xl text-white placeholder-slate-600 focus:outline-none transition-all font-sans text-sm"
+                    />
+                  </div>
                 </div>
-              </div>
+
+                <div className="space-y-2 animate-fade-in-up delay-75">
+                  <label className="text-xs font-semibold text-[#8e9bb0] uppercase tracking-wider block">
+                    License Number
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-[#8e9bb0]">
+                      <Shield size={18} />
+                    </span>
+                    <input 
+                      type="text"
+                      value={licenseNumber}
+                      onChange={(e) => setLicenseNumber(e.target.value)}
+                      placeholder="GJ01-20240001"
+                      required
+                      disabled={isSubmitting}
+                      className="w-full pl-11 pr-4 py-3 bg-[#07090e] border border-white/5 hover:border-white/10 focus:border-emerald-500/40 rounded-xl text-white placeholder-slate-600 focus:outline-none transition-all font-sans text-sm"
+                    />
+                  </div>
+                </div>
+              </>
             )}
 
             {/* Submit Button */}

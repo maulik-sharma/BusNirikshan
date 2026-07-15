@@ -89,8 +89,8 @@ router.get("/:routeId", async (req, res) => {
         if (!mongoose.isValidObjectId(routeId)) {
             return res.status(400).json({ message: "Validation Error: 'routeId' is not a valid ObjectId" });
         }
-        const route = await getOrSet(`routes:detail:${routeId}`, TTL.ROUTE_DETAIL, () =>
-            Route.findById(routeId)
+        const route = await getOrSet(`routes:detail:populated:${routeId}`, TTL.ROUTE_DETAIL, () =>
+            Route.findById(routeId).populate("stopIds", "name location type").lean()
         );
 
         if (!route) return res.status(404).json({ message: "Route not found" });

@@ -67,7 +67,7 @@ export const BusManagePage = () => {
       const body = { ...form, capacity: Number(form.capacity) };
       let response;
       if (editingBus) {
-        response = await apiFetch(`/api/buses/${editingBus._id}`, { method: 'PUT', body: JSON.stringify(body) });
+        response = await apiFetch(`/api/buses/${editingBus._id}`, { method: 'PATCH', body: JSON.stringify(body) });
       } else {
         response = await apiFetch('/api/buses', { method: 'POST', body: JSON.stringify(body) });
       }
