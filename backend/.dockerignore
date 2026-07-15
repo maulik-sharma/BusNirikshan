@@ -1,0 +1,15 @@
+node_modules
+npm-debug.log*
+.env
+.env.*
+!.env.example
+.git
+.github
+.gitignore
+dbcommands.txt
+swagger.js
+README.md
+LICENSE
+Dockerfile
+docker-compose.yml
+*.md

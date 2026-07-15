@@ -1,0 +1,54 @@
+services:
+  # ── Backend API ────────────────────────────────────────────────────────────
+  backend:
+    container_name: busnirikshan-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    environment:
+      # Override cloud URIs with local container services
+      MONGODB_URI: mongodb://mongo:27017/busnirikshan
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      mongo:
+        condition: service_started
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - busnirikshan-net
+
+  # ── MongoDB ────────────────────────────────────────────────────────────────
+  mongo:
+    image: mongo:7
+    container_name: busnirikshan-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    networks:
+      - busnirikshan-net
+
+  # ── Redis ──────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: busnirikshan-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - busnirikshan-net
+
+# ── Persistent volumes ────────────────────────────────────────────────────────
+volumes:
+  mongo-data:
+  redis-data:
+
+# ── Network ───────────────────────────────────────────────────────────────────
+networks:
+  busnirikshan-net:
+    driver: bridge
