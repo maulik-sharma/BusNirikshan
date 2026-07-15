@@ -1,8 +1,9 @@
 services:
   # ── Backend API ────────────────────────────────────────────────────────────
-  backend:
+  busnirikshanbackend:
     image: ghcr.io/maulik-sharma/busnirikshan-backend:latest
-    container_name: busnirikshan-backend
+    container_name: busnirikshanbackend
+    hostname: busnirikshanbackend
     ports:
       - "5001:5000"
     environment:
@@ -22,45 +23,11 @@ services:
       SMTP_AUTH: "${SMTP_AUTH:-true}"
       SMTP_USER: "${SMTP_USER}"
       SMTP_PASS: "${SMTP_PASS}"
-    depends_on:
-      mongo:
-        condition: service_started
-      redis:
-        condition: service_started
     restart: unless-stopped
     networks:
-      - busnirikshan-net
-
-  # ── MongoDB ────────────────────────────────────────────────────────────────
-  mongo:
-    image: mongo:7
-    container_name: busnirikshan-mongo
-    ports:
-      - "27018:27017"
-    volumes:
-      - mongo-data:/data/db
-    restart: unless-stopped
-    networks:
-      - busnirikshan-net
-
-  # ── Redis ──────────────────────────────────────────────────────────────────
-  redis:
-    image: redis:7-alpine
-    container_name: busnirikshan-redis
-    ports:
-      - "6380:6379"
-    volumes:
-      - redis-data:/data
-    restart: unless-stopped
-    networks:
-      - busnirikshan-net
-
-# ── Persistent volumes ────────────────────────────────────────────────────────
-volumes:
-  mongo-data:
-  redis-data:
+      - portfolio
 
 # ── Network ───────────────────────────────────────────────────────────────────
 networks:
-  busnirikshan-net:
+  portfolio:
     driver: bridge
