@@ -1,6 +1,7 @@
 services:
   # ── Backend API ────────────────────────────────────────────────────────────
   backend:
+    image: ghcr.io/maulik-sharma/busnirikshan-backend:latest
     container_name: busnirikshan-backend
     ports:
       - "5000:5000"
