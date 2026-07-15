@@ -1,0 +1,46 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend for Bus Nirikshan Project",
+  "homepage": "https://github.com/menankis/BusNirikshan#readme",
+  "bugs": {
+    "url": "https://github.com/menankis/BusNirikshan/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/menankis/BusNirikshan.git"
+  },
+  "license": "ISC",
+  "author": "Maulik Sharma",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "pm2-runtime start server.js -i 2",
+    "stop": "pm2 stop server.js",
+    "restart": "pm2 restart server.js",
+    "logs": "pm2 logs",
+    "swagger": "node swagger.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.4.1",
+    "express-ws": "^5.0.2",
+    "ioredis": "^5.10.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.4.1",
+    "morgan": "^1.10.1",
+    "nodemailer": "^8.0.5",
+    "pm2": "^7.0.1",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.7.0",
+    "swagger-autogen": "^2.23.7"
+  }
+}
