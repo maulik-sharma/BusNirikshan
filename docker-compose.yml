@@ -4,7 +4,7 @@ services:
     image: ghcr.io/maulik-sharma/busnirikshan-backend:latest
     container_name: busnirikshan-backend
     ports:
-      - "5000:5000"
+      - "5001:5000"
     environment:
       # ── Database & Cache ──────────────────────────────────────────────
       MONGODB_URI: "${MONGODB_URI}"
@@ -36,7 +36,7 @@ services:
     image: mongo:7
     container_name: busnirikshan-mongo
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - mongo-data:/data/db
     restart: unless-stopped
@@ -48,7 +48,7 @@ services:
     image: redis:7-alpine
     container_name: busnirikshan-redis
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - redis-data:/data
     restart: unless-stopped
