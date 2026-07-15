@@ -30,4 +30,5 @@ services:
 # ── Network ───────────────────────────────────────────────────────────────────
 networks:
   portfolio:
+    name: portfolio
     driver: bridge
