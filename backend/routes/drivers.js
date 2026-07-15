@@ -71,6 +71,29 @@ router.get("/", requireRole("admin"), async (req, res) => {
 });
 
 /**
+ * @route   GET /api/drivers/me
+ * @desc    Get current logged-in driver's profile
+ * @access  Private
+ */
+router.get("/me", async (req, res) => {
+  try {
+    const driver = await Driver.findOne({ userId: req.user.userId })
+      .populate("userId", "name email")
+      .populate("assignedBusId", "registrationNumber routeName isActive")
+      .lean();
+
+    if (!driver) {
+      return res.status(404).json({ message: "Driver profile not found" });
+    }
+
+    return res.status(200).json({ message: "Driver profile fetched successfully", driver });
+  } catch (err) {
+    console.error("[GET /drivers/me]", err);
+    return res.status(500).json({ message: "Failed to fetch driver profile" });
+  }
+});
+
+/**
  * @route   GET /api/drivers/:driverId
  * @desc    Get details of a specific driver
  * @access  Private

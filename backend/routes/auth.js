@@ -62,6 +62,10 @@ router.post("/register/init", otpLimiter, async (req, res) => {
             expiresAt: new Date(Date.now() + 10 * 60 * 1000)  // 10 minutes
         });
 
+        console.log(`\n========================================`);
+        console.log(`OTP for ${email}: ${rawCode}`);
+        console.log(`========================================\n`);
+
         const mailOptions = {
             from: process.env.SMTP_USER,
             to: email,
@@ -72,12 +76,18 @@ router.post("/register/init", otpLimiter, async (req, res) => {
                    <p>If you did not request this, please ignore this email.</p>`
         };
 
-        if (await transporter.verify()) {
-            await transporter.sendMail(mailOptions);
-            return res.status(200).json({ message: "OTP sent to your email. Please verify to complete registration." });
-        } else {
-            console.error("Cannot verify SMTP transporter");
-            return res.status(500).json({ message: "Internal server error" });
+        try {
+            if (await transporter.verify()) {
+                await transporter.sendMail(mailOptions);
+                return res.status(200).json({ message: "OTP sent to your email. Please verify to complete registration." });
+            } else {
+                console.warn("Cannot verify SMTP transporter, skipping email delivery in development.");
+                return res.status(200).json({ message: "OTP generated (see console). Email delivery skipped due to SMTP configuration." });
+            }
+        } catch (mailError) {
+            console.warn("SMTP Error:", mailError.message);
+            console.warn("Skipping email delivery, check console for OTP.");
+            return res.status(200).json({ message: "OTP generated (see console). Email delivery skipped due to SMTP error." });
         }
     } catch (error) {
         console.error(error);
