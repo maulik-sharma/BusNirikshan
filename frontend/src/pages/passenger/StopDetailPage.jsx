@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { apiFetch } from '../../api/client';
 import { useWebSocket } from '../../hooks/useWebSocket';
+import { useGeolocation } from '../../hooks/useGeolocation';
 import { LiveMap } from '../../components/LiveMap';
 import { 
   ArrowLeft, 
@@ -25,6 +26,7 @@ export const StopDetailPage = () => {
   const [subscribedRoutes, setSubscribedRoutes] = useState(new Set()); // set of routeIds user subscribed to at this stop
 
   const { locations, subscribe, unsubscribe } = useWebSocket();
+  const geo = useGeolocation();
 
   // 1. Fetch stop metadata and approaching buses
   const loadData = async () => {
@@ -68,6 +70,10 @@ export const StopDetailPage = () => {
   };
 
   useEffect(() => {
+    if (!stopId) {
+      setIsLoading(false);
+      return;
+    }
     loadData();
     loadSubscriptions();
   }, [stopId, subscribe]);
@@ -171,12 +177,29 @@ export const StopDetailPage = () => {
   // Sort buses by ETA minutes ascending
   const sortedBuses = [...processedBuses].sort((a, b) => (a.eta_minutes || 0) - (b.eta_minutes || 0));
 
+  if (!stopId) {
+    return (
+      <div className="flex-grow flex items-center justify-center p-8 animate-fade-in-up h-[calc(100vh-100px)]">
+        <div className="max-w-md w-full liquid-glass p-8 rounded-[2rem] border border-white/5 shadow-2xl text-center">
+          <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-6 text-emerald-500">
+            <MapPin size={32} />
+          </div>
+          <h2 className="text-xl font-bold text-white mb-2">Select a Bus Stop</h2>
+          <p className="text-sm text-[#8e9bb0] mb-6">
+            Please select a bus stop from the Live Map or the Nearby Stops list on the dashboard to view its live ETA board.
+          </p>
+          <Link to="/dashboard" className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-600 active:scale-[0.98] text-black font-semibold rounded-xl text-sm transition-all shadow-[0_4px_12px_rgba(16,185,129,0.2)]">
+            <ArrowLeft size={16} /> Back to Dashboard
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
-      <div className="flex-1 flex justify-center items-center">
-        <div className="text-[#8e9bb0] font-mono text-sm tracking-wider animate-pulse">
-          LOADING APPROACHING BOARD...
-        </div>
+      <div className="flex-grow flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -282,6 +305,7 @@ export const StopDetailPage = () => {
           <LiveMap
             buses={processedBuses}
             stops={[stop]}
+            userLocation={geo.coordinates ? [geo.coordinates[1], geo.coordinates[0]] : null}
             center={stopCoords}
             zoom={14}
           />

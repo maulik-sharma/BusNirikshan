@@ -205,6 +205,7 @@ export const DashboardPage = () => {
         <LiveMap 
           buses={mergedBuses} 
           stops={stops} 
+          userLocation={geo.coordinates ? [geo.coordinates[1], geo.coordinates[0]] : null}
           center={mapCenter} 
           zoom={mapZoom} 
         />

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import { BusMarker } from './BusMarker';
 import { StopMarker } from './StopMarker';
+import { UserMarker } from './UserMarker';
 
 // Helper component to programmatically pan/zoom map on coordinate selections
 const MapController = ({ center, zoom }) => {
@@ -17,6 +18,7 @@ const MapController = ({ center, zoom }) => {
 export const LiveMap = ({ 
   buses = [], 
   stops = [], 
+  userLocation = null,
   center = [20.5937, 78.9629], // Center of India
   zoom = 5, 
   onMapClick 
@@ -59,6 +61,9 @@ export const LiveMap = ({
         
         {/* Map Click Listener */}
         <MapClickHandler />
+
+        {/* User Location Marker */}
+        {userLocation && <UserMarker position={userLocation} />}
 
         {/* Bus Markers */}
         {buses.map((bus) => (
