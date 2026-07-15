@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
+import { WebSocketProvider } from './hooks/useWebSocket';
 
 // Auth Pages
 import { LoginPage } from './pages/auth/LoginPage';
@@ -36,43 +37,45 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          {/* Public Auth Routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/verify-otp" element={<VerifyOtpPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <WebSocketProvider>
+          <Routes>
+            {/* Public Auth Routes */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/verify-otp" element={<VerifyOtpPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-          {/* Protected Passenger Routes */}
-          <Route element={<ProtectedRoute allowedRoles={['user']}><Layout /></ProtectedRoute>}>
-            <Route path="/dashboard" element={<PassengerDashboard />} />
-            <Route path="/stops/:stopId" element={<StopDetailPage />} />
-            <Route path="/routes" element={<RoutesPage />} />
-            <Route path="/alerts" element={<AlertsPage />} />
-          </Route>
+            {/* Protected Passenger Routes */}
+            <Route element={<ProtectedRoute allowedRoles={['user']}><Layout /></ProtectedRoute>}>
+              <Route path="/dashboard" element={<PassengerDashboard />} />
+              <Route path="/stops/:stopId" element={<StopDetailPage />} />
+              <Route path="/routes" element={<RoutesPage />} />
+              <Route path="/alerts" element={<AlertsPage />} />
+            </Route>
 
-          {/* Protected Driver Routes */}
-          <Route element={<ProtectedRoute allowedRoles={['driver']}><Layout /></ProtectedRoute>}>
-            <Route path="/driver" element={<DriverDashboard />} />
-            <Route path="/driver/history" element={<ShiftHistoryPage />} />
-          </Route>
+            {/* Protected Driver Routes */}
+            <Route element={<ProtectedRoute allowedRoles={['driver']}><Layout /></ProtectedRoute>}>
+              <Route path="/driver" element={<DriverDashboard />} />
+              <Route path="/driver/history" element={<ShiftHistoryPage />} />
+            </Route>
 
-          {/* Protected Admin Routes */}
-          <Route element={<ProtectedRoute allowedRoles={['admin']}><Layout /></ProtectedRoute>}>
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/buses" element={<BusManagePage />} />
-            <Route path="/admin/stops/:stopId" element={<StopDetailPage />} />
-            <Route path="/admin/stops" element={<StopManagePage />} />
-            <Route path="/admin/routes" element={<RouteManagePage />} />
-            <Route path="/admin/drivers" element={<DriverManagePage />} />
-            <Route path="/admin/users" element={<UserManagePage />} />
-            <Route path="/admin/health" element={<SystemHealthPage />} />
-          </Route>
+            {/* Protected Admin Routes */}
+            <Route element={<ProtectedRoute allowedRoles={['admin']}><Layout /></ProtectedRoute>}>
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/buses" element={<BusManagePage />} />
+              <Route path="/admin/stops/:stopId" element={<StopDetailPage />} />
+              <Route path="/admin/stops" element={<StopManagePage />} />
+              <Route path="/admin/routes" element={<RouteManagePage />} />
+              <Route path="/admin/drivers" element={<DriverManagePage />} />
+              <Route path="/admin/users" element={<UserManagePage />} />
+              <Route path="/admin/health" element={<SystemHealthPage />} />
+            </Route>
 
-          {/* Catch-all redirect */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
+            {/* Catch-all redirect */}
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </WebSocketProvider>
       </AuthProvider>
     </BrowserRouter>
   );

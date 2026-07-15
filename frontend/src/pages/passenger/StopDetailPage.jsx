@@ -25,67 +25,61 @@ export const StopDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [subscribedRoutes, setSubscribedRoutes] = useState(new Set()); // set of routeIds user subscribed to at this stop
 
-  const { locations, subscribe, unsubscribe } = useWebSocket();
+  const { locations, subscribe } = useWebSocket();
   const geo = useGeolocation();
 
   // 1. Fetch stop metadata and approaching buses
-  const loadData = async () => {
-    try {
-      const stopRes = await apiFetch(`/api/stops/${stopId}`);
-      const stopData = await stopRes.json();
-      if (!stopRes.ok) throw new Error(stopData.message || 'Failed to fetch stop metadata');
-      setStop(stopData.stop);
-
-      const busesRes = await apiFetch(`/api/stops/${stopId}/buses`);
-      const busesData = await busesRes.json();
-      if (busesRes.ok) {
-        setBuses(busesData.buses || []);
-        
-        // Subscribe to live locations for all approaching buses
-        const ids = (busesData.buses || []).map(b => b._id);
-        subscribe(ids);
-      }
-    } catch (err) {
-      console.error(err);
-      setError(err.message || 'Error loading stop data.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // 2. Fetch user's active notifications to check subscriptions at this stop
-  const loadSubscriptions = async () => {
-    try {
-      const res = await apiFetch('/api/notifications');
-      const data = await res.json();
-      if (res.ok && data.subscriptions) {
-        const subsAtStop = data.subscriptions
-          .filter(sub => sub.stopId?._id === stopId)
-          .map(sub => sub.routeId?._id);
-        setSubscribedRoutes(new Set(subsAtStop));
-      }
-    } catch (err) {
-      console.error('Failed to load subscriptions:', err);
-    }
-  };
-
   useEffect(() => {
     if (!stopId) {
       setIsLoading(false);
       return;
     }
-    loadData();
-    loadSubscriptions();
-  }, [stopId, subscribe]);
 
-  // Clean up WS subscriptions on unmount
-  useEffect(() => {
-    return () => {
-      if (buses.length > 0) {
-        unsubscribe(buses.map(b => b._id));
+    let ignore = false;
+
+    const loadData = async () => {
+      try {
+        const stopRes = await apiFetch(`/api/stops/${stopId}`);
+        const stopData = await stopRes.json();
+        if (!stopRes.ok) throw new Error(stopData.message || 'Failed to fetch stop metadata');
+        if (!ignore) setStop(stopData.stop);
+
+        const busesRes = await apiFetch(`/api/stops/${stopId}/buses`);
+        const busesData = await busesRes.json();
+        if (!ignore && busesRes.ok) {
+          setBuses(busesData.buses || []);
+          const ids = (busesData.buses || []).map(b => b._id);
+          if (ids.length > 0) subscribe(ids);
+        }
+      } catch (err) {
+        if (!ignore) {
+          console.error(err);
+          setError(err.message || 'Error loading stop data.');
+        }
+      } finally {
+        if (!ignore) setIsLoading(false);
       }
     };
-  }, [buses, unsubscribe]);
+
+    const loadSubscriptions = async () => {
+      try {
+        const res = await apiFetch('/api/notifications');
+        const data = await res.json();
+        if (!ignore && res.ok && data.subscriptions) {
+          const subsAtStop = data.subscriptions
+            .filter(sub => sub.stopId?._id === stopId)
+            .map(sub => sub.routeId?._id);
+          setSubscribedRoutes(new Set(subsAtStop));
+        }
+      } catch (err) {
+        if (!ignore) console.error('Failed to load subscriptions:', err);
+      }
+    };
+
+    loadData();
+    loadSubscriptions();
+    return () => { ignore = true; };
+  }, [stopId, subscribe]);
 
   // 3. Trigger alert subscription toggles
   const toggleAlert = async (routeId) => {

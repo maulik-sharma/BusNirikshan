@@ -17,53 +17,44 @@ export const DashboardPage = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
-  const { locations, subscribe, unsubscribe } = useWebSocket();
+  const { locations, subscribe } = useWebSocket();
 
-  const loadAdminDashboard = async () => {
-    try {
-      // 1. Fetch system active buses stats
-      const statsRes = await apiFetch('/api/analytics/system/active-buses');
-      const statsData = await statsRes.json();
-      if (statsRes.ok) {
-        setActiveStats(statsData);
-      }
-
-      // 2. Fetch live bus coordinates snapshots
-      const liveRes = await apiFetch('/api/locations/live?limit=100');
-      const liveData = await liveRes.json();
-      if (liveRes.ok) {
-        setActiveBuses(liveData.buses || []);
-        
-        // Subscribe to WS updates
-        const activeIds = (liveData.buses || []).map(b => b._id);
-        subscribe(activeIds);
-      }
-      // 3. Fetch stops for the map
-      const stopsRes = await apiFetch('/api/stops?limit=500');
-      const stopsData = await stopsRes.json();
-      if (stopsRes.ok) {
-        setStops(stopsData.stops || []);
-      }
-    } catch (err) {
-      console.error(err);
-      setError('Failed to load system dashboard analytics.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  // Fetch dashboard data — guarded for React Strict Mode double-mount
   useEffect(() => {
-    loadAdminDashboard();
-  }, [subscribe]);
+    let ignore = false;
 
-  // Clean up WS subscriptions on unmount
-  useEffect(() => {
-    return () => {
-      if (activeBuses.length > 0) {
-        unsubscribe(activeBuses.map(b => b._id));
+    const loadAdminDashboard = async () => {
+      try {
+        const statsRes = await apiFetch('/api/analytics/system/active-buses');
+        const statsData = await statsRes.json();
+        if (!ignore && statsRes.ok) setActiveStats(statsData);
+
+        const liveRes = await apiFetch('/api/locations/live?limit=100');
+        const liveData = await liveRes.json();
+        if (!ignore && liveRes.ok) {
+          const busList = liveData.buses || [];
+          setActiveBuses(busList);
+
+          const activeIds = busList.map(b => b._id);
+          if (activeIds.length > 0) subscribe(activeIds);
+        }
+
+        const stopsRes = await apiFetch('/api/stops?limit=500');
+        const stopsData = await stopsRes.json();
+        if (!ignore && stopsRes.ok) setStops(stopsData.stops || []);
+      } catch (err) {
+        if (!ignore) {
+          console.error(err);
+          setError('Failed to load system dashboard analytics.');
+        }
+      } finally {
+        if (!ignore) setIsLoading(false);
       }
     };
-  }, [activeBuses, unsubscribe]);
+
+    loadAdminDashboard();
+    return () => { ignore = true; };
+  }, [subscribe]);
 
   // Merge WebSocket positions into buses list
   const mergedBuses = activeBuses

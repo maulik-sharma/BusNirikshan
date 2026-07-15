@@ -16,47 +16,49 @@ export const DashboardPage = () => {
   const [mapZoom, setMapZoom] = useState(5);
 
   const geo = useGeolocation();
-  const { locations, subscribe, unsubscribe } = useWebSocket();
+  const { locations, subscribe } = useWebSocket();
 
-  // 1. Fetch live active buses on mount
-  const fetchLiveBuses = async () => {
-    try {
-      const response = await apiFetch('/api/locations/live?limit=100');
-      const data = await response.json();
-      if (response.ok) {
-        setBuses(data.buses || []);
-        
-        // Subscribe to WS updates for these bus IDs
-        const activeIds = (data.buses || []).map(b => b._id);
-        subscribe(activeIds);
+  // 1. Fetch live active buses on mount — guarded for React Strict Mode double-mount
+  useEffect(() => {
+    let ignore = false;
+
+    const fetchLiveBuses = async () => {
+      try {
+        const response = await apiFetch('/api/locations/live?limit=100');
+        const data = await response.json();
+        if (!ignore && response.ok) {
+          const busList = data.buses || [];
+          setBuses(busList);
+
+          const activeIds = busList.map(b => b._id);
+          if (activeIds.length > 0) subscribe(activeIds);
+        }
+      } catch (err) {
+        if (!ignore) {
+          console.error('Error fetching live buses:', err);
+          setError('Failed to load active buses.');
+        }
       }
-    } catch (err) {
-      console.error('Error fetching live buses:', err);
-      setError('Failed to load active buses.');
-    }
-  };
+    };
+
+    fetchLiveBuses();
+    return () => { ignore = true; };
+  }, [subscribe]);
 
   // 2. Fetch stops: either nearby stops (if GPS is active) or general list
   const fetchStops = async () => {
     setIsLoadingStops(true);
     try {
       let url = '/api/stops?limit=15';
-      
-      // If coordinates are fetched, query nearby stops
       if (geo.coordinates) {
         const [lng, lat] = geo.coordinates;
-        url = `/api/stops/nearby?longitude=${lng}&latitude=${lat}&radius=10000`; // 10km radius
-        
-        // Adjust map center to user position once coordinates are resolved
+        url = `/api/stops/nearby?longitude=${lng}&latitude=${lat}&radius=10000`;
         setMapCenter([lat, lng]);
         setMapZoom(12);
       }
-      
       const response = await apiFetch(url);
       const data = await response.json();
-      if (response.ok) {
-        setStops(data.stops || []);
-      }
+      if (response.ok) setStops(data.stops || []);
     } catch (err) {
       console.error('Error loading stops:', err);
     } finally {
@@ -64,22 +66,7 @@ export const DashboardPage = () => {
     }
   };
 
-  useEffect(() => {
-    fetchLiveBuses();
-  }, [subscribe]);
-
-  useEffect(() => {
-    fetchStops();
-  }, [geo.coordinates]);
-
-  // Clean up WS subscriptions on unmount
-  useEffect(() => {
-    return () => {
-      if (buses.length > 0) {
-        unsubscribe(buses.map(b => b._id));
-      }
-    };
-  }, [buses, unsubscribe]);
+  useEffect(() => { fetchStops(); }, [geo.coordinates]);
 
   // 3. Merge WebSocket updates into buses list
   const mergedBuses = buses

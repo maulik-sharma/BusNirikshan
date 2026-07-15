@@ -1,9 +1,13 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
 
-export const useWebSocket = () => {
+// ─── Context ────────────────────────────────────────────────────────────────
+const WebSocketContext = createContext(null);
+
+// ─── Provider (mount ONCE at app root) ──────────────────────────────────────
+export const WebSocketProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [locations, setLocations] = useState({}); // busId -> location update data
-  
+
   const wsRef = useRef(null);
   const subscribedBusesRef = useRef(new Set());
   const reconnectTimeoutRef = useRef(null);
@@ -15,7 +19,6 @@ export const useWebSocket = () => {
     }
 
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    // Dynamically match current host (proxied via Vite /api in dev, mapped to root in prod)
     const wsUrl = `${wsProtocol}//${window.location.host}/api/locations/livewebsocket`;
 
     const ws = new WebSocket(wsUrl);
@@ -35,7 +38,7 @@ export const useWebSocket = () => {
     ws.onmessage = (event) => {
       try {
         const msg = JSON.parse(event.data);
-        
+
         if (msg.type === 'location') {
           console.log(`[WS] Received location for bus ${msg.busId}:`, msg.lat, msg.lng);
           setLocations((prev) => ({
@@ -71,7 +74,7 @@ export const useWebSocket = () => {
     ws.onclose = () => {
       console.log('[WS] Connection closed');
       setIsConnected(false);
-      
+
       // Trigger reconnect backoff after 3 seconds
       reconnectTimeoutRef.current = setTimeout(() => {
         connect();
@@ -84,15 +87,16 @@ export const useWebSocket = () => {
     };
   }, []);
 
-  // Send subscribe request
+  // Send subscribe request (idempotent — skips already-subscribed IDs)
   const subscribe = useCallback((busIds) => {
     if (!Array.isArray(busIds) || busIds.length === 0) return;
-    
-    // Add to local trackers
-    busIds.forEach(id => subscribedBusesRef.current.add(id));
 
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({ type: 'subscribe', busIds }));
+    // Only subscribe to IDs we aren't already tracking
+    const newIds = busIds.filter(id => !subscribedBusesRef.current.has(id));
+    newIds.forEach(id => subscribedBusesRef.current.add(id));
+
+    if (newIds.length > 0 && wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'subscribe', busIds: newIds }));
     }
   }, []);
 
@@ -116,6 +120,7 @@ export const useWebSocket = () => {
     }
   }, []);
 
+  // Connect once when the provider mounts (app root — never unmounts)
   useEffect(() => {
     connect();
 
@@ -124,24 +129,36 @@ export const useWebSocket = () => {
         clearTimeout(reconnectTimeoutRef.current);
       }
       if (wsRef.current) {
-        // Remove close listener to prevent loop on teardown
         wsRef.current.onclose = null;
-        
-        // In React Strict Mode, the component unmounts immediately while WS is still CONNECTING.
-        // Closing it in CONNECTING state causes Vite proxy to throw ECONNABORTED.
+
         if (wsRef.current.readyState === WebSocket.CONNECTING) {
+          // Defer close until handshake completes to avoid ECONNABORTED
           const ws = wsRef.current;
-          ws.onopen = () => {
-            ws.onclose = null;
-            ws.close();
-          };
+          ws.onopen = () => { ws.onclose = null; ws.close(); };
         } else {
           wsRef.current.close();
         }
+        wsRef.current = null;
       }
     };
   }, [connect]);
 
-  return { isConnected, locations, subscribe, unsubscribe };
+  const value = { isConnected, locations, subscribe, unsubscribe };
+
+  return (
+    <WebSocketContext.Provider value={value}>
+      {children}
+    </WebSocketContext.Provider>
+  );
 };
+
+// ─── Consumer hook (use in any component) ───────────────────────────────────
+export const useWebSocket = () => {
+  const ctx = useContext(WebSocketContext);
+  if (!ctx) {
+    throw new Error('useWebSocket must be used within a <WebSocketProvider>');
+  }
+  return ctx;
+};
+
 export default useWebSocket;
