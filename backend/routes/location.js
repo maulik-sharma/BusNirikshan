@@ -256,7 +256,7 @@ router.get("/live", async (req, res) => {
             if (routeId) filter.routeId = routeId;
 
             return Bus.find(filter, {
-                _id: 1, routeName: 1, rtc: 1, routeId: 1, lastKnownLocation: 1
+                _id: 1, routeName: 1, rtc: 1, routeId: 1, lastKnownLocation: 1, isActive: 1
             }).limit(limit).lean();
         });
 

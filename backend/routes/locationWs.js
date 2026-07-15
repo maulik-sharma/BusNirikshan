@@ -118,7 +118,8 @@ function startRedisSubscriber() {
  *   ← { "type": "error", "message": "..." }
  *   ← { "type": "ack", "subscribed": [...], "unsubscribed": [...] }
  */
-function locationWsHandler(ws, _req) {
+function locationWsHandler(ws, req) {
+    console.log(`[ws] Client connected to livewebsocket from ${req.ip}`);
     send(ws, {
         type: "connected",
         message: "Connected. Send { type: 'subscribe', busIds: ['...'] } to receive updates."

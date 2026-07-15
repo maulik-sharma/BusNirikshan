@@ -126,7 +126,18 @@ export const useWebSocket = () => {
       if (wsRef.current) {
         // Remove close listener to prevent loop on teardown
         wsRef.current.onclose = null;
-        wsRef.current.close();
+        
+        // In React Strict Mode, the component unmounts immediately while WS is still CONNECTING.
+        // Closing it in CONNECTING state causes Vite proxy to throw ECONNABORTED.
+        if (wsRef.current.readyState === WebSocket.CONNECTING) {
+          const ws = wsRef.current;
+          ws.onopen = () => {
+            ws.onclose = null;
+            ws.close();
+          };
+        } else {
+          wsRef.current.close();
+        }
       }
     };
   }, [connect]);

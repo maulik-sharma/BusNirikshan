@@ -354,7 +354,7 @@ router.get("/:stopId/buses", async (req, res) => {
                     isActive: true,
                     "lastKnownLocation.coordinates": { $exists: true, $ne: [] }
                 },
-                { _id: 1, routeName: 1, rtc: 1, routeId: 1, lastKnownLocation: 1 }
+                { _id: 1, routeName: 1, rtc: 1, routeId: 1, lastKnownLocation: 1, isActive: 1 }
             ).lean();
 
             const FALLBACK_SPEED_KMH = 40;
@@ -369,6 +369,7 @@ router.get("/:stopId/buses", async (req, res) => {
                     routeName: bus.routeName,
                     rtc: bus.rtc,
                     routeId: bus.routeId,
+                    isActive: bus.isActive,
                     lastKnownLocation: loc,
                     distance_km: parseFloat(distanceKm.toFixed(2)),
                     speed_kmh: speedKmh,
