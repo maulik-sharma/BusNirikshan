@@ -66,22 +66,24 @@ export const DashboardPage = () => {
   }, [activeBuses, unsubscribe]);
 
   // Merge WebSocket positions into buses list
-  const mergedBuses = activeBuses.map((bus) => {
-    const wsUpdate = locations[bus._id];
-    if (wsUpdate) {
-      return {
-        ...bus,
-        lastKnownLocation: {
-          ...bus.lastKnownLocation,
-          coordinates: [wsUpdate.lng, wsUpdate.lat],
-          speed_kmh: wsUpdate.speed_kmh,
-          heading_deg: wsUpdate.heading_deg,
-          recordedAt: wsUpdate.timestamp
-        }
-      };
-    }
-    return bus;
-  });
+  const mergedBuses = activeBuses
+    .filter((bus) => locations[bus._id]?.isActive !== false)
+    .map((bus) => {
+      const wsUpdate = locations[bus._id];
+      if (wsUpdate) {
+        return {
+          ...bus,
+          lastKnownLocation: {
+            ...bus.lastKnownLocation,
+            coordinates: [wsUpdate.lng, wsUpdate.lat],
+            speed_kmh: wsUpdate.speed_kmh,
+            heading_deg: wsUpdate.heading_deg,
+            recordedAt: wsUpdate.timestamp
+          }
+        };
+      }
+      return bus;
+    });
 
   if (isLoading) {
     return (

@@ -308,6 +308,9 @@ router.post("/:driverId/shift/start", async (req, res) => {
       Bus.findByIdAndUpdate(busId, { $set: { isActive: true } }),
     ]);
 
+    const { publish } = require("../utils/pubsub");
+    await publish(busId.toString(), { type: "status", isActive: true }).catch(err => console.error("Publish failed:", err));
+
     await invalidate(
       `drivers:detail:${driverId}`,
       "drivers:list:*",
@@ -371,6 +374,9 @@ router.post("/:driverId/shift/end", async (req, res) => {
       }),
       Bus.findByIdAndUpdate(busId, { $set: { isActive: false } }),
     ]);
+
+    const { publish } = require("../utils/pubsub");
+    await publish(busId.toString(), { type: "status", isActive: false }).catch(err => console.error("Publish failed:", err));
 
     await invalidate(
       `drivers:detail:${driverId}`,

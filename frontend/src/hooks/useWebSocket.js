@@ -37,14 +37,25 @@ export const useWebSocket = () => {
         const msg = JSON.parse(event.data);
         
         if (msg.type === 'location') {
+          console.log(`[WS] Received location for bus ${msg.busId}:`, msg.lat, msg.lng);
           setLocations((prev) => ({
             ...prev,
             [msg.busId]: {
+              ...prev[msg.busId],
               lat: msg.lat,
               lng: msg.lng,
               speed_kmh: msg.speed_kmh,
               heading_deg: msg.heading_deg,
               timestamp: msg.timestamp
+            }
+          }));
+        } else if (msg.type === 'status') {
+          console.log(`[WS] Received status for bus ${msg.busId}: isActive=${msg.isActive}`);
+          setLocations((prev) => ({
+            ...prev,
+            [msg.busId]: {
+              ...prev[msg.busId],
+              isActive: msg.isActive
             }
           }));
         } else if (msg.type === 'error') {

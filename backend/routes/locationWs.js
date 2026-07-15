@@ -96,7 +96,7 @@ function startRedisSubscriber() {
             return;
         }
 
-        const message = { type: "location", ...payload };
+        const message = { type: payload.type || "location", ...payload };
 
         for (const ws of clients) {
             send(ws, message);

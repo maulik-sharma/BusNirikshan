@@ -137,7 +137,9 @@ export const StopDetailPage = () => {
     return R * c;
   };
 
-  const processedBuses = buses.map((bus) => {
+  const processedBuses = buses
+    .filter((bus) => locations[bus._id]?.isActive !== false)
+    .map((bus) => {
     const wsUpdate = locations[bus._id];
     let coords = bus.lastKnownLocation?.coordinates;
     let speed = bus.speed_kmh || 40;

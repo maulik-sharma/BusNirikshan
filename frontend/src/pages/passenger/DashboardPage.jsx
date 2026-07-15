@@ -82,22 +82,24 @@ export const DashboardPage = () => {
   }, [buses, unsubscribe]);
 
   // 3. Merge WebSocket updates into buses list
-  const mergedBuses = buses.map((bus) => {
-    const wsUpdate = locations[bus._id];
-    if (wsUpdate) {
-      return {
-        ...bus,
-        lastKnownLocation: {
-          ...bus.lastKnownLocation,
-          coordinates: [wsUpdate.lng, wsUpdate.lat],
-          speed_kmh: wsUpdate.speed_kmh,
-          heading_deg: wsUpdate.heading_deg,
-          recordedAt: wsUpdate.timestamp
-        }
-      };
-    }
-    return bus;
-  });
+  const mergedBuses = buses
+    .filter((bus) => locations[bus._id]?.isActive !== false)
+    .map((bus) => {
+      const wsUpdate = locations[bus._id];
+      if (wsUpdate) {
+        return {
+          ...bus,
+          lastKnownLocation: {
+            ...bus.lastKnownLocation,
+            coordinates: [wsUpdate.lng, wsUpdate.lat],
+            speed_kmh: wsUpdate.speed_kmh,
+            heading_deg: wsUpdate.heading_deg,
+            recordedAt: wsUpdate.timestamp
+          }
+        };
+      }
+      return bus;
+    });
 
   // Filter stops by query string
   const filteredStops = stops.filter(stop => 
