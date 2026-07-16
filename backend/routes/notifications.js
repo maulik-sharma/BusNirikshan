@@ -4,6 +4,7 @@ const Notification = require("../models/notification");
 const Stop = require("../models/stop");
 const Bus = require("../models/bus");
 const { getDistanceKm } = require("../utils/geo");
+const { notificationLimiter } = require("../middleware/rateLimiters");
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ const DEFAULT_SPEED_KMH = 40;
  * @param   {string} req.body.routeId - ID of the route
  * @param   {number} [req.body.thresholdMinutes=5] - ETA threshold in minutes to trigger alert
  */
-router.post("/subscribe", async (req, res) => {
+router.post("/subscribe", notificationLimiter, async (req, res) => {
   try {
     const { stopId, routeId, thresholdMinutes = 5 } = req.body;
     const userId = req.user.userId;
@@ -72,7 +73,7 @@ router.post("/subscribe", async (req, res) => {
  * @param   {string} req.body.stopId - ID of the stop
  * @param   {string} req.body.routeId - ID of the route
  */
-router.delete("/subscribe", async (req, res) => {
+router.delete("/subscribe", notificationLimiter, async (req, res) => {
   try {
     const { stopId, routeId } = req.body;
     const userId = req.user.userId;
@@ -201,7 +202,7 @@ router.get("/", async (req, res) => {
  * @param   {string} req.body.routeId - ID of the route
  * @param   {number} req.body.thresholdMinutes - New ETA threshold in minutes to trigger alert
  */
-router.patch("/subscribe", async (req, res) => {
+router.patch("/subscribe", notificationLimiter, async (req, res) => {
   try {
     const { stopId, routeId, thresholdMinutes } = req.body;
     const userId = req.user.userId;

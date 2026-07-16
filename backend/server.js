@@ -53,7 +53,7 @@ app.use("/api/admin",     authorise, adminRoutes);               // no rate limi
 
 app.use("/api/locations", authorise, userApiLimiter, locationSseRoutes);
 
-app.use("/api/notifications", authorise, notificationLimiter, notificationRoutes);
+app.use("/api/notifications", authorise, userApiLimiter, notificationRoutes);
 
 // ── Swagger UI ────────────────────────────────────────────────────────────────
 const swaggerUi = require('swagger-ui-express');
