@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client';
 import { RoadHorizon, ArrowRight, Warning, Check, Shield, CaretDown, CaretUp, Circle } from '@phosphor-icons/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const RoutesPage = () => {
+  const navigate = useNavigate();
   const [routes, setRoutes] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -175,7 +176,11 @@ export const RoutesPage = () => {
                   ) : routeDetails[route._id].stopIds?.length > 0 ? (
                     <div className="relative border-l border-white/10 ml-2 space-y-4 pb-2">
                       {routeDetails[route._id].stopIds.map((stop, idx) => (
-                        <div key={idx} className="relative pl-4 flex flex-col group/stop">
+                        <div 
+                          key={idx} 
+                          onClick={() => navigate(`/stops/${stop._id}`)}
+                          className="relative pl-4 flex flex-col group/stop cursor-pointer"
+                        >
                           <Circle size={8} weight="fill" className="absolute -left-[4.5px] top-1 text-[#8e9bb0] group-hover/stop:text-emerald-500 transition-colors" />
                           <span className="text-xs font-semibold text-slate-200 group-hover/stop:text-emerald-400 transition-colors">
                             {stop.name || 'Unknown Stop'}

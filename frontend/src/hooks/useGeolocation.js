@@ -22,11 +22,17 @@ export const useGeolocation = (options = { enableHighAccuracy: true, timeout: 10
       // Convert speed from meters/second to kilometers/hour
       const speedKmh = speed && speed > 0 ? parseFloat((speed * 3.6).toFixed(1)) : 0;
       
-      setPosition({
-        coordinates: [longitude, latitude], // GeoJSON order: [longitude, latitude]
-        speed_kmh: speedKmh,
-        heading_deg: heading !== null && heading !== undefined ? heading : 0,
-        error: null
+      setPosition(prev => {
+        const newHeading = (heading !== null && heading !== undefined && !Number.isNaN(heading)) 
+          ? heading 
+          : prev.heading_deg;
+
+        return {
+          coordinates: [longitude, latitude],
+          speed_kmh: speedKmh,
+          heading_deg: newHeading,
+          error: null
+        };
       });
     };
 
