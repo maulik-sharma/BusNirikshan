@@ -9,25 +9,38 @@ export const AlertsPage = () => {
   const [editingId, setEditingId] = useState(null);
   const [editThreshold, setEditThreshold] = useState(5);
 
-  const loadAlerts = async () => {
-    try {
-      const response = await apiFetch('/api/notifications');
-      const data = await response.json();
-      if (response.ok) {
-        setSubscriptions(data.subscriptions || []);
-      } else {
-        throw new Error(data.message || 'Failed to fetch active alerts.');
-      }
-    } catch (err) {
-      console.error(err);
-      setError(err.message || 'Error loading alerts.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
+    let ignore = false;
+    const controller = new AbortController();
+    
+    const loadAlerts = async () => {
+      try {
+        const response = await apiFetch('/api/notifications', { signal: controller.signal });
+        const data = await response.json();
+        if (!ignore && response.ok) {
+          setSubscriptions(data.subscriptions || []);
+        } else if (!ignore) {
+          throw new Error(data.message || 'Failed to fetch active alerts.');
+        }
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+        if (!ignore) {
+          console.error(err);
+          setError(err.message || 'Error loading alerts.');
+        }
+      } finally {
+        if (!ignore) {
+          setIsLoading(false);
+        }
+      }
+    };
+
     loadAlerts();
+
+    return () => {
+      ignore = true;
+      controller.abort();
+    };
   }, []);
 
   const handleUnsubscribe = async (stopId, routeId) => {
@@ -61,8 +74,11 @@ export const AlertsPage = () => {
         body: JSON.stringify({ stopId, routeId, thresholdMinutes: Number(editThreshold) }),
       });
       if (response.ok) {
+        const data = await response.json();
         setEditingId(null);
-        loadAlerts(); // reload
+        setSubscriptions(prev => prev.map(sub => 
+          sub._id === data.subscription._id ? data.subscription : sub
+        ));
       } else {
         const data = await response.json();
         throw new Error(data.message || 'Failed to update alert threshold.');

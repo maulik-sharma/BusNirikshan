@@ -5,6 +5,8 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
 import { WebSocketProvider } from './hooks/useWebSocket';
 
+import { ETAAlertProvider } from './hooks/useETAAlerts';
+
 // Auth Pages
 import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
@@ -38,8 +40,9 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <WebSocketProvider>
-          <Routes>
-            {/* Public Auth Routes */}
+          <ETAAlertProvider>
+            <Routes>
+              {/* Public Auth Routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/verify-otp" element={<VerifyOtpPage />} />
@@ -74,7 +77,8 @@ function App() {
 
             {/* Catch-all redirect */}
             <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
+            </Routes>
+          </ETAAlertProvider>
         </WebSocketProvider>
       </AuthProvider>
     </BrowserRouter>
