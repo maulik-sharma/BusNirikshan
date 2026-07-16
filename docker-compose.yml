@@ -33,13 +33,13 @@ services:
     container_name: busnirikshanfrontend
     hostname: busnirikshanfrontend
     ports:
-      - "3000:3000"
+      - "3001:3000"
     depends_on:
       - busnirikshanbackend
     restart: unless-stopped
     networks:
       - portfolio
-      
+
 # ── Network ───────────────────────────────────────────────────────────────────
 networks:
   portfolio:
