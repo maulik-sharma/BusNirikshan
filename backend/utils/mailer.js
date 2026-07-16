@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
     port: parseInt(process.env.SMTP_PORT, 10),
     pool: true,
     maxConnections: 5,
-    secure: process.env.SMTP_AUTH === "true",
+    secure: true,
     auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,

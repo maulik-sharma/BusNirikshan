@@ -211,8 +211,8 @@ router.post("/login", accountLimiter, async (req, res) => {
 
         res.cookie("refresh_token", refresh_token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            secure: true,
+            sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
@@ -322,8 +322,8 @@ router.post("/refresh", refreshLimiter, async (req, res) => {
 
         res.cookie("refresh_token", new_refresh_token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            secure: true,
+            sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 

@@ -68,7 +68,8 @@ export const AuthProvider = ({ children }) => {
 
   const refreshSession = async () => {
     try {
-      const response = await fetch('/api/auth/refresh', {
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${baseUrl}/api/auth/refresh`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

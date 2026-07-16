@@ -23,7 +23,10 @@ export const apiFetch = async (url, options = {}) => {
     credentials: 'include', // Ensures HTTP-only cookies are sent/received
   };
 
-  let response = await fetch(url, fetchOptions);
+  const baseUrl = import.meta.env.VITE_API_URL || '';
+  const fullUrl = url.startsWith('/') ? `${baseUrl}${url}` : url;
+
+  let response = await fetch(fullUrl, fetchOptions);
 
   if (response.status === 401) {
     try {
@@ -33,7 +36,7 @@ export const apiFetch = async (url, options = {}) => {
 
       if (errorData.code === 'token_expired') {
         // Silent token refresh request
-        const refreshResponse = await fetch('/api/auth/refresh', {
+        const refreshResponse = await fetch(`${baseUrl}/api/auth/refresh`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -47,7 +50,7 @@ export const apiFetch = async (url, options = {}) => {
           
           // Re-issue request with new Authorization header
           fetchOptions.headers['Authorization'] = `Bearer ${newAccessToken}`;
-          response = await fetch(url, fetchOptions);
+          response = await fetch(fullUrl, fetchOptions);
         } else {
           // Refresh token expired or revoked
           setAccessToken('');

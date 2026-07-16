@@ -18,8 +18,14 @@ export const WebSocketProvider = ({ children }) => {
       return;
     }
 
-    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${wsProtocol}//${window.location.host}/api/locations/livewebsocket`;
+    const baseUrl = import.meta.env.VITE_API_URL || '';
+    let wsUrl;
+    if (baseUrl) {
+      wsUrl = baseUrl.replace(/^http/, 'ws') + '/api/locations/livewebsocket';
+    } else {
+      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      wsUrl = `${wsProtocol}//${window.location.host}/api/locations/livewebsocket`;
+    }
 
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
