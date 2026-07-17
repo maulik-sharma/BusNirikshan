@@ -74,11 +74,11 @@ export const useGeolocation = (options = { enableHighAccuracy: true, timeout: 10
       // --- 2. Smoothing (Exponential Moving Average) ---
       
       // Speed EMA (alpha = 0.3) -> favors stability but tracks changes quickly
-      const SPEED_ALPHA = 0.3;
+      const SPEED_ALPHA = 0.5;
       filterState.smoothedSpeed = SPEED_ALPHA * rawSpeedKmh + (1 - SPEED_ALPHA) * filterState.smoothedSpeed;
 
       // Circular Heading EMA (alpha = 0.2) -> heavier smoothing for compass jitter
-      const HEADING_ALPHA = 0.2;
+      const HEADING_ALPHA = 0.4;
       let smoothedHeading = filterState.smoothedHeading;
       
       // Calculate shortest angular difference (e.g. 350 -> 10 should go through 0, not backwards)

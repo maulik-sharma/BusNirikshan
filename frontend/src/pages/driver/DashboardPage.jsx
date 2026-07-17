@@ -190,6 +190,19 @@ export const DashboardPage = () => {
     );
   }
 
+  // Map State & Initial GPS Lock
+  const [mapCenter, setMapCenter] = useState([20.5937, 78.9629]);
+  const [mapZoom, setMapZoom] = useState(5);
+  const hasLockedGPS = useRef(false);
+
+  useEffect(() => {
+    if (geo.coordinates && !hasLockedGPS.current) {
+      setMapCenter([geo.coordinates[1], geo.coordinates[0]]);
+      setMapZoom(15);
+      hasLockedGPS.current = true;
+    }
+  }, [geo.coordinates]);
+
   // Define dynamic display variables for map plotting
   const busMock = activeShiftInfo && geo.coordinates ? [{
     _id: activeShiftInfo.busId,
@@ -203,9 +216,6 @@ export const DashboardPage = () => {
       recordedAt: new Date().toISOString()
     }
   }] : [];
-
-  const mapCenter = geo.coordinates ? [geo.coordinates[1], geo.coordinates[0]] : [20.5937, 78.9629];
-  const mapZoom = geo.coordinates ? 15 : 5;
 
   return (
     <div className="flex-1 flex flex-col lg:flex-row gap-6 h-full min-h-[calc(100dvh-7.5rem)] animate-fade-in-up">
