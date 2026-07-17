@@ -2,15 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { apiFetch } from '../../api/client';
 import { useGeolocation } from '../../hooks/useGeolocation';
 import { LiveMap } from '../../components/LiveMap';
-import { 
-  SteeringWheel, 
-  MapPin, 
-  Clock, 
-  Speedometer, 
-  Compass, 
-  Warning, 
-  ShieldCheck 
-} from '@phosphor-icons/react';
+import { SteeringWheelIcon, MapPinIcon, ClockIcon, SpeedometerIcon, CompassIcon, WarningIcon, ShieldCheckIcon } from '@phosphor-icons/react';
 
 export const DashboardPage = () => {
   const [driver, setDriver] = useState(null);
@@ -192,7 +184,7 @@ export const DashboardPage = () => {
   if (error && !driver) {
     return (
       <div className="flex-grow flex flex-col justify-center items-center gap-4 text-center">
-        <Warning size={32} className="text-red-400" />
+        <WarningIcon size={32} className="text-red-400" />
         <p className="text-red-400 font-semibold max-w-sm">{error}</p>
       </div>
     );
@@ -224,7 +216,7 @@ export const DashboardPage = () => {
         <div className="liquid-glass p-6 rounded-[2rem] space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
-              <SteeringWheel size={20} className="text-emerald-500" />
+              <SteeringWheelIcon size={20} className="text-emerald-500" />
             </div>
             <div>
               <h3 className="text-white font-bold tracking-tight text-sm">Shift Terminal</h3>

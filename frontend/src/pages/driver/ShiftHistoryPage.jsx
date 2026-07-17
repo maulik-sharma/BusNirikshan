@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client';
-import { Clock, Warning, Info, Calendar } from '@phosphor-icons/react';
+import { ClockIcon, WarningIcon, InfoIcon, CalendarIcon } from '@phosphor-icons/react';
 
 export const ShiftHistoryPage = () => {
   const [shifts, setShifts] = useState([]);
@@ -54,7 +54,7 @@ export const ShiftHistoryPage = () => {
       {/* Header section */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-white mb-1 flex items-center gap-2">
-          <Clock size={22} className="text-emerald-500" />
+          <ClockIcon size={22} className="text-emerald-500" />
           <span>Shift Logs History</span>
         </h1>
         <p className="text-xs text-[#8e9bb0]">Track your historical driving hours and recorded geolocation logs</p>
@@ -62,7 +62,7 @@ export const ShiftHistoryPage = () => {
 
       {error && (
         <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-          <Warning size={18} />
+          <WarningIcon size={18} />
           <span>{error}</span>
         </div>
       )}
@@ -76,7 +76,7 @@ export const ShiftHistoryPage = () => {
         </div>
       ) : shifts.length === 0 ? (
         <div className="liquid-glass p-8 rounded-[2rem] text-center text-[#8e9bb0]">
-          <Info size={32} className="mx-auto text-[#8e9bb0]/40 mb-3" />
+          <InfoIcon size={32} className="mx-auto text-[#8e9bb0]/40 mb-3" />
           <h3 className="font-bold text-white mb-1">No Shift Logs</h3>
           <p className="text-xs max-w-sm mx-auto">
             You have not recorded any shift sequences yet. Click "Active Shift" to start tracking.

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client';
-import { RoadHorizon, Plus, Pencil, Trash, X, Warning, Check } from '@phosphor-icons/react';
+import { RoadHorizonIcon, PlusIcon, PencilIcon, TrashIcon, XIcon, WarningIcon, CheckIcon } from '@phosphor-icons/react';
 import { StopSelector } from '../../components/StopSelector';
 
 const emptyForm = { name: '', rtc: '', totalDistanceKm: '', estimatedDurationMin: '', stopIds: [] };
@@ -109,18 +109,18 @@ export const RouteManagePage = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white mb-1 flex items-center gap-2">
-            <RoadHorizon size={22} className="text-emerald-500" />
+            <RoadHorizonIcon size={22} className="text-emerald-500" />
             <span>Manage Routes</span>
           </h1>
           <p className="text-xs text-[#8e9bb0]">Define, sequence, and manage bus route definitions</p>
         </div>
         <button onClick={openCreate} className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 active:scale-[0.98] text-black font-semibold rounded-xl text-xs transition-all">
-          <Plus size={14} weight="bold" /> Add Route
+          <PlusIcon size={14} weight="bold" /> Add Route
         </button>
       </div>
 
-      {error && <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm"><Warning size={18} /><span>{error}</span></div>}
-      {success && <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm"><Check size={18} /><span>{success}</span></div>}
+      {error && <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm"><WarningIcon size={18} /><span>{error}</span></div>}
+      {success && <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm"><CheckIcon size={18} /><span>{success}</span></div>}
 
       {isLoading ? (
         <div className="space-y-3">{Array.from({ length: 5 }).map((_, i) => <div key={i} className="h-16 bg-white/5 border border-white/5 animate-pulse rounded-xl" />)}</div>
@@ -154,8 +154,8 @@ export const RouteManagePage = () => {
                     </td>
                     <td className="py-4 px-6 text-right">
                       <div className="inline-flex gap-2">
-                        <button onClick={() => openEdit(route)} className="p-1.5 rounded-lg border border-white/5 text-[#8e9bb0] hover:text-white hover:bg-white/5 active:scale-95 transition-all"><Pencil size={14} /></button>
-                        <button onClick={() => handleDelete(route._id)} className="p-1.5 rounded-lg border border-white/5 text-[#8e9bb0] hover:text-red-500 hover:bg-red-500/10 active:scale-95 transition-all"><Trash size={14} /></button>
+                        <button onClick={() => openEdit(route)} className="p-1.5 rounded-lg border border-white/5 text-[#8e9bb0] hover:text-white hover:bg-white/5 active:scale-95 transition-all"><PencilIcon size={14} /></button>
+                        <button onClick={() => handleDelete(route._id)} className="p-1.5 rounded-lg border border-white/5 text-[#8e9bb0] hover:text-red-500 hover:bg-red-500/10 active:scale-95 transition-all"><TrashIcon size={14} /></button>
                       </div>
                     </td>
                   </tr>
@@ -182,7 +182,7 @@ export const RouteManagePage = () => {
           <div className="w-full max-w-lg liquid-glass p-8 rounded-[2.5rem] border border-white/5 bg-[#0d111b]/95 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold text-white">{editingRoute ? 'Edit Route' : 'Create New Route'}</h3>
-              <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg text-[#8e9bb0] hover:text-white hover:bg-white/5"><X size={18} /></button>
+              <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg text-[#8e9bb0] hover:text-white hover:bg-white/5"><XIcon size={18} /></button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">

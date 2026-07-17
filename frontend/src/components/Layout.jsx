@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { useAuth } from '../context/AuthContext';
-import { List, SignOut } from '@phosphor-icons/react';
+import { ListIcon, SignOutIcon } from '@phosphor-icons/react';
 
 export const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,7 +26,7 @@ export const Layout = () => {
               onClick={toggleSidebar}
               className="md:hidden p-2 rounded-xl text-[#8e9bb0] hover:text-white hover:bg-white/5 active:scale-95 transition-all"
             >
-              <List size={22} />
+              <ListIcon size={22} />
             </button>
             <h2 className="text-lg font-bold tracking-tight text-white hidden md:block">
               Control Panel
@@ -39,7 +39,7 @@ export const Layout = () => {
               onClick={logout}
               className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 hover:border-red-500/30 text-[#8e9bb0] hover:text-red-500 hover:bg-red-500/10 active:scale-[0.98] transition-all duration-200 text-sm font-medium"
             >
-              <SignOut size={16} />
+              <SignOutIcon size={16} />
               <span>Log Out</span>
             </button>
           </div>

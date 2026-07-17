@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { apiFetch } from '../../api/client';
-import { Envelope, Key, User as UserIcon, Shield, Warning } from '@phosphor-icons/react';
+import { useAuth } from '../../context/AuthContext';
+import { EnvelopeIcon, KeyIcon, UserIcon, ShieldIcon, WarningIcon } from '@phosphor-icons/react';
 
 export const RegisterPage = () => {
   const [name, setName] = useState('');
@@ -14,6 +15,16 @@ export const RegisterPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // Redirect if session is silently restored
+  useEffect(() => {
+    if (user) {
+      if (user.role === 'admin') navigate('/admin', { replace: true });
+      else if (user.role === 'driver') navigate('/driver', { replace: true });
+      else navigate('/dashboard', { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -68,7 +79,7 @@ export const RegisterPage = () => {
         <div className="liquid-glass p-8 rounded-[2.5rem] border border-white/5 bg-[#0d111b]/80">
           {error && (
             <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm mb-6">
-              <Warning size={18} />
+              <WarningIcon size={18} />
               <span>{error}</span>
             </div>
           )}
@@ -102,7 +113,7 @@ export const RegisterPage = () => {
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-[#8e9bb0]">
-                  <Envelope size={18} />
+                  <EnvelopeIcon size={18} />
                 </span>
                 <input 
                   type="email"
@@ -123,7 +134,7 @@ export const RegisterPage = () => {
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-[#8e9bb0]">
-                  <Key size={18} />
+                  <KeyIcon size={18} />
                 </span>
                 <input 
                   type="password"
@@ -177,7 +188,7 @@ export const RegisterPage = () => {
                   </label>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-[#8e9bb0]">
-                      <Shield size={18} />
+                      <ShieldIcon size={18} />
                     </span>
                     <input 
                       type="text"
@@ -197,7 +208,7 @@ export const RegisterPage = () => {
                   </label>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-[#8e9bb0]">
-                      <Shield size={18} />
+                      <ShieldIcon size={18} />
                     </span>
                     <input 
                       type="text"

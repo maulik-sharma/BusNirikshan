@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MagnifyingGlass, X, CaretUp, CaretDown, MapPin, Trash } from '@phosphor-icons/react';
+import { MagnifyingGlassIcon, XIcon, CaretUpIcon, CaretDownIcon, MapPinIcon, TrashIcon } from '@phosphor-icons/react';
 
 export const StopSelector = ({ availableStops, selectedStopIds, onChange }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -57,7 +57,7 @@ export const StopSelector = ({ availableStops, selectedStopIds, onChange }) => {
       {/* Search Bar */}
       <div className="relative" ref={dropdownRef}>
         <div className="relative">
-          <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8e9bb0]" size={16} />
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8e9bb0]" size={16} />
           <input
             type="text"
             placeholder="Search stops by name or city to add..."
@@ -75,7 +75,7 @@ export const StopSelector = ({ availableStops, selectedStopIds, onChange }) => {
               onClick={() => setSearchTerm('')} 
               className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8e9bb0] hover:text-white"
             >
-              <X size={14} />
+              <XIcon size={14} />
             </button>
           )}
         </div>
@@ -115,7 +115,7 @@ export const StopSelector = ({ availableStops, selectedStopIds, onChange }) => {
       {selectedStopIds.length > 0 && (
         <div className="bg-[#07090e] border border-white/5 rounded-xl p-4">
           <h4 className="text-xs font-semibold text-[#8e9bb0] uppercase tracking-wider mb-3 flex items-center gap-2">
-            <MapPin size={14} />
+            <MapPinIcon size={14} />
             Route Sequence ({selectedStopIds.length} stops)
           </h4>
           <div className="space-y-2 h-64 overflow-y-auto pr-2 custom-scrollbar">
@@ -141,7 +141,7 @@ export const StopSelector = ({ availableStops, selectedStopIds, onChange }) => {
                         disabled={index === 0}
                         className="p-0.5 rounded text-[#8e9bb0] hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent"
                       >
-                        <CaretUp size={14} />
+                        <CaretUpIcon size={14} />
                       </button>
                       <button 
                         type="button" 
@@ -149,7 +149,7 @@ export const StopSelector = ({ availableStops, selectedStopIds, onChange }) => {
                         disabled={index === selectedStopIds.length - 1}
                         className="p-0.5 rounded text-[#8e9bb0] hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent"
                       >
-                        <CaretDown size={14} />
+                        <CaretDownIcon size={14} />
                       </button>
                     </div>
                     <button 
@@ -157,7 +157,7 @@ export const StopSelector = ({ availableStops, selectedStopIds, onChange }) => {
                       onClick={() => handleRemove(index)}
                       className="p-1.5 rounded-lg text-red-400 hover:text-white hover:bg-red-500/20 bg-red-500/10 transition-colors"
                     >
-                      <Trash size={14} />
+                      <TrashIcon size={14} />
                     </button>
                   </div>
                 </div>

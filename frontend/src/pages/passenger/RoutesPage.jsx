@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client';
-import { RoadHorizon, ArrowRight, Warning, Check, Shield, CaretDown, CaretUp, Circle } from '@phosphor-icons/react';
+import { RoadHorizonIcon, ArrowRightIcon, WarningIcon, CheckIcon, ShieldIcon, CaretDownIcon, CaretUpIcon, CircleIcon } from '@phosphor-icons/react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export const RoutesPage = () => {
@@ -68,7 +68,7 @@ export const RoutesPage = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white mb-1 flex items-center gap-2">
-            <RoadHorizon size={22} className="text-emerald-500" />
+            <RoadHorizonIcon size={22} className="text-emerald-500" />
             <span>Bus Routes</span>
           </h1>
           <p className="text-xs text-[#8e9bb0]">Browse system routes, schedules, and active sequences</p>
@@ -92,7 +92,7 @@ export const RoutesPage = () => {
 
       {error && (
         <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-          <Warning size={18} />
+          <WarningIcon size={18} />
           <span>{error}</span>
         </div>
       )}
@@ -119,14 +119,14 @@ export const RoutesPage = () => {
                 {/* RTC badge */}
                 <div className="flex items-center justify-between mb-4">
                   <span className="flex items-center gap-1 text-[10px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 px-2 py-0.5 rounded font-mono font-semibold">
-                    <Shield size={10} />
+                    <ShieldIcon size={10} />
                     <span>{route.rtc}</span>
                   </span>
                   
                   <span className={`flex items-center gap-1 text-[10px] ${
                     route.isActive ? 'text-emerald-500' : 'text-slate-500'
                   }`}>
-                    <Check size={10} />
+                    <CheckIcon size={10} />
                     <span>{route.isActive ? 'Active' : 'Suspended'}</span>
                   </span>
                 </div>
@@ -160,7 +160,7 @@ export const RoutesPage = () => {
                   {expandedRouteId === route._id ? 'Hide Stops Sequence' : 'Show Stops Sequence'}
                 </span>
                 <span className="text-[#8e9bb0] group-hover:text-emerald-500 transition-all">
-                  {expandedRouteId === route._id ? <CaretUp size={14} /> : <CaretDown size={14} />}
+                  {expandedRouteId === route._id ? <CaretUpIcon size={14} /> : <CaretDownIcon size={14} />}
                 </span>
               </div>
 
@@ -181,7 +181,7 @@ export const RoutesPage = () => {
                           onClick={() => navigate(`/stops/${stop._id}`)}
                           className="relative pl-4 flex flex-col group/stop cursor-pointer"
                         >
-                          <Circle size={8} weight="fill" className="absolute -left-[4.5px] top-1 text-[#8e9bb0] group-hover/stop:text-emerald-500 transition-colors" />
+                          <CircleIcon size={8} weight="fill" className="absolute -left-[4.5px] top-1 text-[#8e9bb0] group-hover/stop:text-emerald-500 transition-colors" />
                           <span className="text-xs font-semibold text-slate-200 group-hover/stop:text-emerald-400 transition-colors">
                             {stop.name || 'Unknown Stop'}
                           </span>

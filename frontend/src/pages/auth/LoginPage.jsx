@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Envelope, Key, Warning } from '@phosphor-icons/react';
+import { EnvelopeIcon, KeyIcon, WarningIcon } from '@phosphor-icons/react';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -9,11 +9,20 @@ export const LoginPage = () => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || '/dashboard';
+
+  // Redirect if session is silently restored
+  useEffect(() => {
+    if (user) {
+      if (user.role === 'admin') navigate('/admin', { replace: true });
+      else if (user.role === 'driver') navigate('/driver', { replace: true });
+      else navigate(from, { replace: true });
+    }
+  }, [user, navigate, from]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,7 +66,7 @@ export const LoginPage = () => {
         <div className="liquid-glass p-8 rounded-[2.5rem] border border-white/5 bg-[#0d111b]/80">
           {error && (
             <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm mb-6">
-              <Warning size={18} />
+              <WarningIcon size={18} />
               <span>{error}</span>
             </div>
           )}
@@ -70,7 +79,7 @@ export const LoginPage = () => {
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-[#8e9bb0]">
-                  <Envelope size={18} />
+                  <EnvelopeIcon size={18} />
                 </span>
                 <input 
                   type="email"
@@ -99,7 +108,7 @@ export const LoginPage = () => {
               </div>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-[#8e9bb0]">
-                  <Key size={18} />
+                  <KeyIcon size={18} />
                 </span>
                 <input 
                   type="password"

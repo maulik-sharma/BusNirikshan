@@ -1,21 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { 
-  MapPin, 
-  Bus, 
-  Bell, 
-  User, 
-  Users, 
-  Heartbeat, 
-  Clock, 
-  List, 
-  X, 
-  RoadHorizon, 
-  UserSquare, 
-  SteeringWheel,
-  Gauge
-} from '@phosphor-icons/react';
+import { MapPinIcon, BusIcon, BellIcon, UserIcon, UsersIcon, HeartbeatIcon, ClockIcon, ListIcon, XIcon, RoadHorizonIcon, UserSquareIcon, SteeringWheelIcon, GaugeIcon } from '@phosphor-icons/react';
 
 export const Sidebar = ({ isOpen, toggleSidebar }) => {
   const { user } = useAuth();
@@ -26,25 +12,25 @@ export const Sidebar = ({ isOpen, toggleSidebar }) => {
     switch (user.role) {
       case 'admin':
         return [
-          { to: '/admin', label: 'System Overview', icon: Gauge },
-          { to: '/admin/buses', label: 'Manage Buses', icon: Bus },
-          { to: '/admin/stops', label: 'Manage Stops', icon: MapPin },
-          { to: '/admin/routes', label: 'Manage Routes', icon: RoadHorizon },
-          { to: '/admin/drivers', label: 'Manage Drivers', icon: SteeringWheel },
-          { to: '/admin/users', label: 'Manage Users', icon: Users },
-          { to: '/admin/health', label: 'System Health', icon: Heartbeat },
+          { to: '/admin', label: 'System Overview', icon: GaugeIcon },
+          { to: '/admin/buses', label: 'Manage Buses', icon: BusIcon },
+          { to: '/admin/stops', label: 'Manage Stops', icon: MapPinIcon },
+          { to: '/admin/routes', label: 'Manage Routes', icon: RoadHorizonIcon },
+          { to: '/admin/drivers', label: 'Manage Drivers', icon: SteeringWheelIcon },
+          { to: '/admin/users', label: 'Manage Users', icon: UsersIcon },
+          { to: '/admin/health', label: 'System Health', icon: HeartbeatIcon },
         ];
       case 'driver':
         return [
-          { to: '/driver', label: 'Active Shift', icon: SteeringWheel },
-          { to: '/driver/history', label: 'Shift Logs', icon: Clock },
+          { to: '/driver', label: 'Active Shift', icon: SteeringWheelIcon },
+          { to: '/driver/history', label: 'Shift Logs', icon: ClockIcon },
         ];
       case 'user':
       default:
         return [
-          { to: '/dashboard', label: 'Live Map', icon: MapPin },
-          { to: '/routes', label: 'Bus Routes', icon: RoadHorizon },
-          { to: '/alerts', label: 'ETA Alerts', icon: Bell },
+          { to: '/dashboard', label: 'Live Map', icon: MapPinIcon },
+          { to: '/routes', label: 'Bus Routes', icon: RoadHorizonIcon },
+          { to: '/alerts', label: 'ETA Alerts', icon: BellIcon },
         ];
     }
   };
@@ -74,7 +60,7 @@ export const Sidebar = ({ isOpen, toggleSidebar }) => {
         <div className="h-20 flex items-center justify-between px-6 border-b border-white/5">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
-              <Bus size={20} className="text-emerald-500" weight="bold" />
+              <BusIcon size={20} className="text-emerald-500" weight="bold" />
             </div>
             <span className="font-bold tracking-tight text-lg text-white">
               BusNirikshan
@@ -85,7 +71,7 @@ export const Sidebar = ({ isOpen, toggleSidebar }) => {
             onClick={toggleSidebar}
             className="md:hidden p-1.5 rounded-lg text-[#8e9bb0] hover:text-white hover:bg-white/5"
           >
-            <X size={20} />
+            <XIcon size={20} />
           </button>
         </div>
 

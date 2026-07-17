@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client';
-import { Heartbeat, Warning, ArrowClockwise, Database, HardDrives, Cpu } from '@phosphor-icons/react';
+import { HeartbeatIcon, WarningIcon, ArrowClockwiseIcon, DatabaseIcon, HardDrivesIcon, CpuIcon } from '@phosphor-icons/react';
 
 export const SystemHealthPage = () => {
   const [health, setHealth] = useState(null);
@@ -47,19 +47,19 @@ export const SystemHealthPage = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white mb-1 flex items-center gap-2">
-            <Heartbeat size={22} className="text-emerald-500" />
+            <HeartbeatIcon size={22} className="text-emerald-500" />
             <span>System Health</span>
           </h1>
           <p className="text-xs text-[#8e9bb0]">Monitor database connections, cache latency, and server instance status</p>
         </div>
         <button onClick={loadHealth} className="flex items-center gap-2 px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/5 active:scale-[0.98] text-white font-semibold rounded-xl text-xs transition-all">
-          <ArrowClockwise size={14} /> Refresh
+          <ArrowClockwiseIcon size={14} /> Refresh
         </button>
       </div>
 
       {error && (
         <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-          <Warning size={18} />
+          <WarningIcon size={18} />
           <span>{error}</span>
         </div>
       )}
@@ -79,7 +79,7 @@ export const SystemHealthPage = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                    <Database size={20} className="text-emerald-500" />
+                    <DatabaseIcon size={20} className="text-emerald-500" />
                   </div>
                   <div>
                     <h4 className="font-bold text-white text-sm">MongoDB</h4>
@@ -109,7 +109,7 @@ export const SystemHealthPage = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
-                    <HardDrives size={20} className="text-red-400" />
+                    <HardDrivesIcon size={20} className="text-red-400" />
                   </div>
                   <div>
                     <h4 className="font-bold text-white text-sm">Redis</h4>
@@ -139,7 +139,7 @@ export const SystemHealthPage = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
-                    <Cpu size={20} className="text-blue-400" />
+                    <CpuIcon size={20} className="text-blue-400" />
                   </div>
                   <div>
                     <h4 className="font-bold text-white text-sm">Server</h4>

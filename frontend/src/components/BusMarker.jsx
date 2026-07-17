@@ -1,7 +1,7 @@
 import React from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
-import { Bus, NavigationArrow, Calendar } from '@phosphor-icons/react';
+import { BusIcon, NavigationArrowIcon, CalendarIcon } from '@phosphor-icons/react';
 
 // Custom rotatable SVG bus icon builder
 const createBusIcon = (heading, isActive) => {
@@ -123,7 +123,7 @@ export const BusMarker = ({ bus }) => {
             </p>
             {lastKnownLocation.recordedAt && (
               <p className="flex justify-between text-[10px] pt-1 text-slate-500 border-t border-white/5 mt-1.5">
-                <span className="flex items-center gap-1"><Calendar size={10} /> Updated:</span>
+                <span className="flex items-center gap-1"><CalendarIcon size={10} /> Updated:</span>
                 <span>{new Date(lastKnownLocation.recordedAt).toLocaleTimeString()}</span>
               </p>
             )}

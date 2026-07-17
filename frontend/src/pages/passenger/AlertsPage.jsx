@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client';
-import { Bell, Clock, Trash, Warning, Info, Check } from '@phosphor-icons/react';
+import { BellIcon, ClockIcon, TrashIcon, WarningIcon, InfoIcon, CheckIcon } from '@phosphor-icons/react';
 
 export const AlertsPage = () => {
   const [subscriptions, setSubscriptions] = useState([]);
@@ -94,7 +94,7 @@ export const AlertsPage = () => {
       {/* Header section */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-white mb-1 flex items-center gap-2">
-          <Bell size={22} className="text-emerald-500" />
+          <BellIcon size={22} className="text-emerald-500" />
           <span>Active ETA Alerts</span>
         </h1>
         <p className="text-xs text-[#8e9bb0]">Manage your stop thresholds and watch live approaching schedules</p>
@@ -102,7 +102,7 @@ export const AlertsPage = () => {
 
       {error && (
         <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-          <Warning size={18} />
+          <WarningIcon size={18} />
           <span>{error}</span>
         </div>
       )}
@@ -115,7 +115,7 @@ export const AlertsPage = () => {
         </div>
       ) : subscriptions.length === 0 ? (
         <div className="liquid-glass p-8 rounded-[2rem] text-center text-[#8e9bb0]">
-          <Info size={32} className="mx-auto text-[#8e9bb0]/40 mb-3" />
+          <InfoIcon size={32} className="mx-auto text-[#8e9bb0]/40 mb-3" />
           <h3 className="font-bold text-white mb-1">No Alerts Setup</h3>
           <p className="text-xs max-w-sm mx-auto mb-4">
             You can configure alerts directly from any Bus Stop detail board to get notified when buses get near.
@@ -141,7 +141,7 @@ export const AlertsPage = () => {
                   </div>
 
                   <p className="text-xs text-[#8e9bb0] flex items-center gap-1.5">
-                    <Clock size={14} className="text-[#8e9bb0]" />
+                    <ClockIcon size={14} className="text-[#8e9bb0]" />
                     <span>Watch Stop: <strong className="text-white">{sub.stopId?.name}</strong> ({sub.stopId?.city})</span>
                   </p>
                 </div>
@@ -165,7 +165,7 @@ export const AlertsPage = () => {
                           onClick={() => handleUpdateThreshold(sub.stopId._id, sub.routeId._id)}
                           className="p-1 rounded bg-emerald-500 text-black active:scale-90"
                         >
-                          <Check size={12} weight="bold" />
+                          <CheckIcon size={12} weight="bold" />
                         </button>
                       </div>
                     ) : (
@@ -200,7 +200,7 @@ export const AlertsPage = () => {
                       onClick={() => handleUnsubscribe(sub.stopId._id, sub.routeId._id)}
                       className="p-2 rounded-xl border border-white/5 text-[#8e9bb0] hover:text-red-500 hover:bg-red-500/10 active:scale-95 transition-all"
                     >
-                      <Trash size={16} />
+                      <TrashIcon size={16} />
                     </button>
                   </div>
 

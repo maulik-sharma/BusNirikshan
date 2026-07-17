@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiFetch } from '../../api/client';
-import { Envelope, Warning, ArrowLeft } from '@phosphor-icons/react';
+import { EnvelopeIcon, WarningIcon, ArrowLeftIcon } from '@phosphor-icons/react';
 
 export const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
@@ -55,7 +55,7 @@ export const ForgotPasswordPage = () => {
         <div className="liquid-glass p-8 rounded-[2.5rem] border border-white/5 bg-[#0d111b]/80">
           {error && (
             <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm mb-6">
-              <Warning size={18} />
+              <WarningIcon size={18} />
               <span>{error}</span>
             </div>
           )}
@@ -74,7 +74,7 @@ export const ForgotPasswordPage = () => {
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-[#8e9bb0]">
-                  <Envelope size={18} />
+                  <EnvelopeIcon size={18} />
                 </span>
                 <input 
                   type="email"
@@ -101,7 +101,7 @@ export const ForgotPasswordPage = () => {
           {/* Login Footer */}
           <div className="mt-8 text-center pt-6 border-t border-white/5 text-sm">
             <Link to="/login" className="inline-flex items-center gap-2 text-[#8e9bb0] hover:text-white transition-colors">
-              <ArrowLeft size={16} />
+              <ArrowLeftIcon size={16} />
               <span>Back to Login</span>
             </Link>
           </div>

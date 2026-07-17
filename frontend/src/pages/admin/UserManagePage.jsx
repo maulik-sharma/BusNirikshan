@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client';
-import { Users, Warning, Check, UserCheck, Shield } from '@phosphor-icons/react';
+import { UsersIcon, WarningIcon, CheckIcon, UserCheckIcon, ShieldIcon } from '@phosphor-icons/react';
 
 export const UserManagePage = () => {
   const [users, setUsers] = useState([]);
@@ -66,7 +66,7 @@ export const UserManagePage = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white mb-1 flex items-center gap-2">
-            <Users size={22} className="text-emerald-500" />
+            <UsersIcon size={22} className="text-emerald-500" />
             <span>Manage Users</span>
           </h1>
           <p className="text-xs text-[#8e9bb0]">Configure user accounts, profiles, and role assignments</p>
@@ -90,14 +90,14 @@ export const UserManagePage = () => {
 
       {error && (
         <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-          <Warning size={18} />
+          <WarningIcon size={18} />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
         <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm">
-          <Check size={18} />
+          <CheckIcon size={18} />
           <span>{success}</span>
         </div>
       )}
@@ -140,7 +140,7 @@ export const UserManagePage = () => {
                               ? 'bg-amber-500/10 border border-amber-500/20 text-amber-500'
                               : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-500'
                         }`}>
-                          {item.role === 'admin' ? <Shield size={10} /> : <UserCheck size={10} />}
+                          {item.role === 'admin' ? <ShieldIcon size={10} /> : <UserCheckIcon size={10} />}
                           <span>{item.role}</span>
                         </span>
                       </td>

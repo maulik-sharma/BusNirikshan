@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../api/client';
-import { ShieldCheck, Envelope, Warning } from '@phosphor-icons/react';
+import { ShieldCheckIcon, EnvelopeIcon, WarningIcon } from '@phosphor-icons/react';
 
 export const VerifyOtpPage = () => {
   const location = useLocation();
@@ -64,7 +64,7 @@ export const VerifyOtpPage = () => {
         <div className="liquid-glass p-8 rounded-[2.5rem] border border-white/5 bg-[#0d111b]/80">
           {error && (
             <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm mb-6">
-              <Warning size={18} />
+              <WarningIcon size={18} />
               <span>{error}</span>
             </div>
           )}
@@ -83,7 +83,7 @@ export const VerifyOtpPage = () => {
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-[#8e9bb0]">
-                  <Envelope size={18} />
+                  <EnvelopeIcon size={18} />
                 </span>
                 <input 
                   type="email"
@@ -104,7 +104,7 @@ export const VerifyOtpPage = () => {
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-[#8e9bb0]">
-                  <ShieldCheck size={18} />
+                  <ShieldCheckIcon size={18} />
                 </span>
                 <input 
                   type="text"

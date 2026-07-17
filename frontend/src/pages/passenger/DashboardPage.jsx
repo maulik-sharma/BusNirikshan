@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { apiFetch } from '../../api/client';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import { useGeolocation } from '../../hooks/useGeolocation';
 import { LiveMap } from '../../components/LiveMap';
-import { MapPin, MagnifyingGlass, Warning, Compass, ArrowClockwise } from '@phosphor-icons/react';
+import { MapPinIcon, MagnifyingGlassIcon, WarningIcon, CompassIcon, ArrowClockwiseIcon } from '@phosphor-icons/react';
 import { Link } from 'react-router-dom';
 
 export const DashboardPage = () => {
@@ -14,6 +14,8 @@ export const DashboardPage = () => {
   const [isLoadingStops, setIsLoadingStops] = useState(false);
   const [mapCenter, setMapCenter] = useState([20.5937, 78.9629]); // Default to center of India
   const [mapZoom, setMapZoom] = useState(5);
+  
+  const hasLockedGPS = useRef(false);
 
   const geo = useGeolocation();
   const { locations, subscribe } = useWebSocket();
@@ -53,8 +55,13 @@ export const DashboardPage = () => {
       if (geo.coordinates) {
         const [lng, lat] = geo.coordinates;
         url = `/api/stops/nearby?longitude=${lng}&latitude=${lat}&radius=10000`;
-        setMapCenter([lat, lng]);
-        setMapZoom(12);
+        
+        // Only pan the camera to the user ONCE when we first get a GPS lock
+        if (!hasLockedGPS.current) {
+          setMapCenter([lat, lng]);
+          setMapZoom(14);
+          hasLockedGPS.current = true;
+        }
       }
       const response = await apiFetch(url);
       const data = await response.json();
@@ -104,7 +111,7 @@ export const DashboardPage = () => {
           
           <div className="relative">
             <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-[#8e9bb0]">
-              <MagnifyingGlass size={16} />
+              <MagnifyingGlassIcon size={16} />
             </span>
             <input 
               type="text"
@@ -117,12 +124,12 @@ export const DashboardPage = () => {
 
           {geo.error ? (
             <div className="flex items-center gap-2 text-xs text-amber-500/80 bg-amber-500/5 p-3 rounded-lg border border-amber-500/10">
-              <Compass size={14} />
+              <CompassIcon size={14} />
               <span>Using default view. Grant GPS access for nearby stops.</span>
             </div>
           ) : geo.coordinates ? (
             <div className="flex items-center gap-2 text-xs text-emerald-500 bg-emerald-500/5 p-3 rounded-lg border border-emerald-500/10 font-mono">
-              <Compass size={14} className="animate-spin" />
+              <CompassIcon size={14} className="animate-spin" />
               <span>GPS Lock: {geo.coordinates[1].toFixed(4)}, {geo.coordinates[0].toFixed(4)}</span>
             </div>
           ) : (
@@ -140,7 +147,7 @@ export const DashboardPage = () => {
               onClick={fetchStops}
               className="p-1 rounded text-[#8e9bb0] hover:text-white hover:bg-white/5 active:scale-95 transition-all"
             >
-              <ArrowClockwise size={14} />
+              <ArrowClockwiseIcon size={14} />
             </button>
           </div>
 
@@ -169,7 +176,7 @@ export const DashboardPage = () => {
                     </p>
                   </div>
                   <div className="shrink-0 flex items-center gap-1.5 text-[10px] text-[#8e9bb0]">
-                    <MapPin size={12} className="text-[#8e9bb0] group-hover:text-emerald-500" />
+                    <MapPinIcon size={12} className="text-[#8e9bb0] group-hover:text-emerald-500" />
                     <span className="font-mono">
                       {geo.coordinates ? 'Nearby' : 'Details'}
                     </span>
@@ -185,7 +192,7 @@ export const DashboardPage = () => {
       <div className="flex-grow order-1 lg:order-2 min-h-[400px] lg:min-h-0 relative">
         {error && (
           <div className="absolute top-4 left-4 z-20 flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-xl backdrop-blur-md">
-            <Warning size={14} />
+            <WarningIcon size={14} />
             <span>{error}</span>
           </div>
         )}

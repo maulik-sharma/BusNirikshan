@@ -4,17 +4,7 @@ import { apiFetch } from '../../api/client';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import { useGeolocation } from '../../hooks/useGeolocation';
 import { LiveMap } from '../../components/LiveMap';
-import { 
-  ArrowLeft, 
-  Bus, 
-  Clock, 
-  MapPin, 
-  Bell, 
-  BellRinging, 
-  Warning, 
-  ArrowRight,
-  Info
-} from '@phosphor-icons/react';
+import { ArrowLeftIcon, BusIcon, ClockIcon, MapPinIcon, BellIcon, BellRingingIcon, WarningIcon, ArrowRightIcon, InfoIcon } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const StopDetailPage = () => {
@@ -178,14 +168,14 @@ export const StopDetailPage = () => {
       <div className="flex-grow flex items-center justify-center p-8 animate-fade-in-up h-[calc(100vh-100px)]">
         <div className="max-w-md w-full liquid-glass p-8 rounded-[2rem] border border-white/5 shadow-2xl text-center">
           <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-6 text-emerald-500">
-            <MapPin size={32} />
+            <MapPinIcon size={32} />
           </div>
           <h2 className="text-xl font-bold text-white mb-2">Select a Bus Stop</h2>
           <p className="text-sm text-[#8e9bb0] mb-6">
             Please select a bus stop from the Live Map or the Nearby Stops list on the dashboard to view its live ETA board.
           </p>
           <Link to="/dashboard" className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-600 active:scale-[0.98] text-black font-semibold rounded-xl text-sm transition-all shadow-[0_4px_12px_rgba(16,185,129,0.2)]">
-            <ArrowLeft size={16} /> Back to Dashboard
+            <ArrowLeftIcon size={16} /> Back to Dashboard
           </Link>
         </div>
       </div>
@@ -203,7 +193,7 @@ export const StopDetailPage = () => {
   if (error || !stop) {
     return (
       <div className="flex-1 flex flex-col justify-center items-center gap-4 text-center">
-        <Warning size={32} className="text-amber-500" />
+        <WarningIcon size={32} className="text-amber-500" />
         <p className="text-red-400 font-semibold">{error || 'Stop not found.'}</p>
         <Link to="/dashboard" className="px-4 py-2 bg-emerald-500 text-black font-semibold rounded-xl text-sm">
           Return to Dashboard
@@ -219,7 +209,7 @@ export const StopDetailPage = () => {
       {/* Header breadcrumb bar */}
       <div className="flex items-center gap-4">
         <Link to="/dashboard" className="p-2 bg-white/5 border border-white/5 hover:border-white/10 rounded-xl text-[#8e9bb0] hover:text-white transition-all">
-          <ArrowLeft size={18} />
+          <ArrowLeftIcon size={18} />
         </Link>
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white mb-0.5">{stop.name}</h1>
@@ -232,14 +222,14 @@ export const StopDetailPage = () => {
         <div className="lg:col-span-1 flex flex-col gap-6 order-2 lg:order-1">
           <div className="liquid-glass p-6 rounded-[2rem] flex-grow flex flex-col min-h-[300px]">
             <h3 className="text-white font-bold tracking-tight text-base mb-4 flex items-center gap-2">
-              <Clock size={18} className="text-emerald-500" />
+              <ClockIcon size={18} className="text-emerald-500" />
               <span>Approaching Buses</span>
             </h3>
 
             <div className="flex-1 space-y-3 overflow-y-auto pr-1">
               {sortedBuses.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center text-[#8e9bb0] gap-2">
-                  <Info size={24} />
+                  <InfoIcon size={24} />
                   <p className="text-xs">No active buses currently approaching this stop.</p>
                 </div>
               ) : (
@@ -274,7 +264,7 @@ export const StopDetailPage = () => {
                                 : 'bg-white/5 border-white/5 text-[#8e9bb0] hover:text-white'
                             }`}
                           >
-                            {isAlertSubbed ? <BellRinging size={14} weight="fill" /> : <Bell size={14} />}
+                            {isAlertSubbed ? <BellRingingIcon size={14} weight="fill" /> : <BellIcon size={14} />}
                           </button>
                           
                           {/* ETA display in font-mono cockpit style */}

@@ -2,13 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client';
 import { LiveMap } from '../../components/LiveMap';
 import { useWebSocket } from '../../hooks/useWebSocket';
-import { 
-  Bus, 
-  Users, 
-  Warning, 
-  Pulse, 
-  Cpu 
-} from '@phosphor-icons/react';
+import { BusIcon, UsersIcon, WarningIcon, PulseIcon, CpuIcon } from '@phosphor-icons/react';
 
 export const DashboardPage = () => {
   const [activeStats, setActiveStats] = useState(null);
@@ -100,7 +94,7 @@ export const DashboardPage = () => {
 
       {error && (
         <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-          <Warning size={18} />
+          <WarningIcon size={18} />
           <span>{error}</span>
         </div>
       )}
@@ -116,7 +110,7 @@ export const DashboardPage = () => {
             <span className="text-[10px] text-[#8e9bb0] block font-mono">ON SERVICE ({totalCount} total)</span>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500">
-            <Bus size={24} />
+            <BusIcon size={24} />
           </div>
         </div>
 
@@ -128,7 +122,7 @@ export const DashboardPage = () => {
             <span className="text-[10px] text-[#8e9bb0] block font-mono">OFF SHIFT</span>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-slate-500/10 border border-slate-500/20 flex items-center justify-center text-slate-400">
-            <Users size={24} />
+            <UsersIcon size={24} />
           </div>
         </div>
 
@@ -143,7 +137,7 @@ export const DashboardPage = () => {
             <span className="text-[10px] text-[#8e9bb0] block font-mono">DB LATENCY STABLE</span>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500">
-            <Pulse size={24} />
+            <PulseIcon size={24} />
           </div>
         </div>
 
@@ -164,7 +158,7 @@ export const DashboardPage = () => {
         <div className="lg:col-span-1 flex flex-col gap-6">
           <div className="liquid-glass p-6 rounded-[2rem] flex-grow overflow-y-auto max-h-[450px] lg:max-h-none">
             <h3 className="text-white font-bold tracking-tight text-base mb-4 flex items-center gap-2">
-              <Cpu size={18} className="text-emerald-500" />
+              <CpuIcon size={18} className="text-emerald-500" />
               <span>RTC Network Breakdown</span>
             </h3>
 
