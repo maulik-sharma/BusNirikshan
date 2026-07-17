@@ -18,6 +18,19 @@ export const DashboardPage = () => {
   const geo = useGeolocation();
   const locationIntervalRef = useRef(null);
 
+  // Map State & Initial GPS Lock
+  const [mapCenter, setMapCenter] = useState([20.5937, 78.9629]);
+  const [mapZoom, setMapZoom] = useState(5);
+  const hasLockedGPS = useRef(false);
+
+  useEffect(() => {
+    if (geo.coordinates && !hasLockedGPS.current) {
+      setMapCenter([geo.coordinates[1], geo.coordinates[0]]);
+      setMapZoom(15);
+      hasLockedGPS.current = true;
+    }
+  }, [geo.coordinates]);
+
   // 1. Fetch current driver profile details
   const fetchDriverProfile = async () => {
     try {
@@ -190,18 +203,7 @@ export const DashboardPage = () => {
     );
   }
 
-  // Map State & Initial GPS Lock
-  const [mapCenter, setMapCenter] = useState([20.5937, 78.9629]);
-  const [mapZoom, setMapZoom] = useState(5);
-  const hasLockedGPS = useRef(false);
-
-  useEffect(() => {
-    if (geo.coordinates && !hasLockedGPS.current) {
-      setMapCenter([geo.coordinates[1], geo.coordinates[0]]);
-      setMapZoom(15);
-      hasLockedGPS.current = true;
-    }
-  }, [geo.coordinates]);
+  // Map State & Initial GPS Lock moved to top level
 
   // Define dynamic display variables for map plotting
   const busMock = activeShiftInfo && geo.coordinates ? [{
